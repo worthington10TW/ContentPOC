@@ -46,11 +46,13 @@ namespace ContentPOC.Integration
             content.Headline.Should().Be("This is a headline");
             content.Summary.Should().Be("This is a summary");
             content.Story.Should().Be("Lorem ipsum");
+            content.Href.Should().Be("news/E3B2F8DA");
         }
 
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
-            _response.Headers.Location.ToString().Should().Be("news/1234567");
+            _response.Headers.Location.ToString()
+            .Should().Be("news/E3B2F8DA");
 
         private readonly string _testXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <news>

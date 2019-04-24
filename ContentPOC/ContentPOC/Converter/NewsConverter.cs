@@ -5,14 +5,14 @@ namespace ContentPOC.Converter
 {
     public class NewsConverter : IConverter<Unit.News>
     {
-        public async Task<News> CreateAsync(NewsRequestXml xml)
+        public async Task<IUnit> CreateAsync(NewsRequestXml xml)
         {
-           return new News
-           {
-               Headline = xml.Headline,
-               Summary = xml.Summary,
-               Story = xml.Story
-           };
+            return new News
+            {
+                Headline = xml.Headline,
+                Summary = xml.Summary,
+                Story = xml.Story
+            };
         }
     }
 }
