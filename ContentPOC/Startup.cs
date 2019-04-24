@@ -1,4 +1,5 @@
 ﻿using ContentPOC.Converter;
+using ContentPOC.HostedService;
 using ContentPOC.NewsIngestor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +23,10 @@ namespace ContentPOC
                 .AddSingleton<IConverter<Unit.News>>(x => new NewsConverter())
                 .AddSingleton<IRepository, InMemoryStore>()
                 .AddTransient<NewsManager>()
-                .AddSingleton<NewsConverter>();
+                .AddSingleton<NewsConverter>()
+                .AddHostedService<NotificationHubService>()
+                .AddSingleton<IUnitNotificationQueue, InMemoryUnitNotificationQueue>()
+                .AddTransient<INotificationHub, SimulationNotificationHub>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -1,10 +1,13 @@
 ﻿using ContentPOC.Converter;
+using ContentPOC.HostedService;
 using ContentPOC.NewsIngestor;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
 using Xunit;
 
 namespace ContentPOC.Integration
@@ -19,7 +22,7 @@ namespace ContentPOC.Integration
         {
             _server = new TestServer(_builder);
             _provider = _server.Host.Services;
-                }
+        }
 
         public void Dispose() => _server?.Dispose();
 
@@ -41,5 +44,26 @@ namespace ContentPOC.Integration
             repository.Should().BeOfType<InMemoryStore>();
         }
 
+        [Fact]
+        public void ShouldSetupGlobalIUnitNotificationQueue()
+        {
+            var repository = _provider.GetService<IUnitNotificationQueue>();
+            repository.Should().NotBeNull();
+            repository.Should().BeOfType<InMemoryUnitNotificationQueue>();
+
+            var sameInstance = _provider.GetService<IUnitNotificationQueue>();
+
+            sameInstance.Should().Be(repository);
+        }
+
+        [Fact]
+        public void ShouldSetupNotificationHub()
+        {
+            _provider.GetServices<INotificationHub>().Should().NotBeNull();
+            var repository = _provider.GetServices<IHostedService>();
+
+            repository.Cast<NotificationHubService>()
+                .Should().NotBeEmpty();
+        }
     }
 }
