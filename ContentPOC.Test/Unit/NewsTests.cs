@@ -21,6 +21,6 @@ namespace ContentPOC.Test.Unit
         
         [Fact]
         public void WhenGettingUrl_ShouldReturnHashCode() =>
-            _news.Href.Should().Be("news/B64A5574");
+            _news.Href.Should().Be("news/E0B8D965");
     }
 }

@@ -1,6 +1,0 @@
-<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
-    <suppress>
-        <notes><![CDATA[ EXAMPLE SKELETON SUPPRESSION: file name: Microsoft.Rest.ClientRuntime.dll  ]]></notes>
-        <cve>CVE-2015-3448</cve>
-    </suppress>
-</suppressions>
