@@ -1,0 +1,95 @@
+#app.gocd.yaml
+format_version: 3
+pipelines:
+  ContentPOC:
+    group: default
+    materials:
+      source:
+        type: configrepo
+        destination: source
+      deploy:
+        git: "git@github.com-kubernetes-apps:LexisNexis/kubernetes-apps.git"
+        branch: uat
+        destination: deploy
+        blacklist: ["**/*"]
+    stages:
+    - DotNet:
+        jobs:
+          Build_and_Test:
+            elastic_profile_id: "dotnet2.2-go-agent-npm-chrome"
+            tasks:
+            - exec:
+                working_directory: source
+                run_if: passed
+                command: "./gocd/dotnet-build-and-test.sh"
+            artifacts:
+            - build:
+                source: source/ContentPOC/out
+            - test:
+                source: source/ContentPOC.Test/TestResults/cs_unit_result.xml
+            - test:
+                source: source/ContentPOC.Integration/TestResults/cs_integration_result.xml
+    - Docker:
+        jobs:
+          Build:
+            elastic_profile_id: "dind-go-agent"
+            tasks:
+            - fetch:
+                artifact_origin: gocd
+                pipeline: ContentPOC
+                stage: DotNet
+                job: Build_and_Test
+                source: out
+                destination: source/ContentPOC
+            - exec:
+                working_directory: source
+                run_if: passed
+                command: "./gocd/docker-build.sh"
+            artifacts:
+            - build:
+                source: source/scan-results/scan.json
+            - build:
+                source: source/scan-results/scan.html
+            - external:
+                id: contentpoc
+                store_id: ecr
+                configuration:
+                  options:
+                    Image: "230575338114.dkr.ecr.us-east-1.amazonaws.com/matt-and-andrew/contentpoc"
+                    Tag: ${GO_REVISION_SOURCE}
+    - Deploy:
+        jobs:
+          UAT:
+            elastic_profile_id: "gomplate-go-agent"
+            tasks:
+            - exec:
+                command: "./source/gocd/deploy.sh"
+    - Verify_Rollout:
+        jobs:
+          UAT:
+            elastic_profile_id: "deploy-verify-agent"
+            environment_variables:
+              KUBERNETES_URL: https://590FC9DA097031809CBFD0FAF1805B1A.yl4.us-east-1.eks.amazonaws.com
+              KUBERNETES_CA: |
+                -----BEGIN CERTIFICATE-----
+                MIICyDCCAbCgAwIBAgIBADANBgkqhkiG9w0BAQsFADAVMRMwEQYDVQQDEwprdWJl
+                cm5ldGVzMB4XDTE4MTEwOTE3MTIwNFoXDTI4MTEwNjE3MTIwNFowFTETMBEGA1UE
+                AxMKa3ViZXJuZXRlczCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKsP
+                0bLF4zH+Tn2Q1uJzCp3sSi/RHVmLI6I/47ulHYjPhzcsU6wReCsizQdWTG4l3oHu
+                wYRZiPAei5T+9uArKxQC7KgRLNVnRSUTvzlU57iC7jp1LU5UxSuy9ipaHSM59gbJ
+                acec5w1ZxD5PnQ3PaQLjalqJLAMJ+ACALI8L2txHlOME3KtWRvE4so0+ry8+I4wy
+                8slVIzi5x+6cAsIrUqCFt5hLBM+KY3YsVhDvsZy+HchX3a1skEgbib+e1Jw0j0Gg
+                IhD5Wt+Gf+G/9RElu1l+6FAW6b744sVDMGDgeBGWrD2Lrl/6lmXSkMwR5KDoEz71
+                0oJLt8QjTBIW5QoU14MCAwEAAaMjMCEwDgYDVR0PAQH/BAQDAgKkMA8GA1UdEwEB
+                /wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAIkSt4AaZvymJ58/+P/tn/fDAj6C
+                //ImlQ4q6kMApD+v/nCOUzRHR3qPSDMxJmXtjzOBS7mv1IzYV+1vvFJBuErSpzDw
+                n6sCn/y5wZKXEY164jE67D28jMCJw8tpq8ZmuVQvg19XW2KRcYiU0zSZ5elCRoel
+                RQFY7E4BBlqPYMSse9f8uvBD3ro2cOv4SevSKzfICwTHKV1WgwiSaAKN9v1RMkPf
+                JYK5I+40JsvHorZjOcpYMMzUe4BlPydUXlHBnloLIGfAzKN4WhEgobkp+CbLAn0q
+                wQBF6EphmPnf5XmAGWbzt+vHrWcyBJEvveco2CSI9P7JMlLChsbR0fdZgfw=
+                -----END CERTIFICATE-----
+              CLUSTER_ID: apps
+            tasks:
+            - exec:
+                command: "sh"
+                arguments: ["-c", "deploy-verify --namespace matt-and-andrew --name matt-and-andrew-contentpoc --expected-image 230575338114.dkr.ecr.us-east-1.amazonaws.com/matt-and-andrew/contentpoc:${GO_REVISION_SOURCE} --timeout 2m"]
