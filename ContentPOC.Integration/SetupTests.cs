@@ -5,7 +5,6 @@ using Xunit;
 using FluentAssertions;
 using ContentPOC.Converter;
 using System;
-using Microsoft.Extensions.Configuration;
 
 namespace ContentPOC.Integration
 {
@@ -26,5 +25,6 @@ namespace ContentPOC.Integration
             converter.Should().NotBeNull();
             converter.Should().BeOfType<NewsConverter>();
         }
+
     }
 }

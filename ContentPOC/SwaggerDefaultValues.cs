@@ -1,11 +1,3 @@
-// /*----------------------------------------------------------------------------------------------*/
-// /*                                                                                              */
-// /*    Copyright © 2017 LexisNexis.  All rights reserved.                                        */
-// /*    RELX Group plc trading as LexisNexis - Registered in England - Number 2746621.            */
-// /*    Registered Office 1 - 3 Strand, London WC2N 5JR.                                          */
-// /*                                                                                              */
-// /*----------------------------------------------------------------------------------------------*/
-
 ﻿using System.Linq;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;

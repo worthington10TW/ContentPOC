@@ -24,7 +24,7 @@ namespace ContentPOC.Integration
                     System.Text.Encoding.UTF8,
                     "application/xml");
             _response = _client
-                .PostAsync("/api/v1/news-ingestor", content)
+                .PostAsync("/api/news-ingestor", content)
                 .GetAwaiter()
                 .GetResult();
         }

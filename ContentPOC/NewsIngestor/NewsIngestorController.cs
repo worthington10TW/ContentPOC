@@ -7,8 +7,7 @@ using System.Xml.Serialization;
 
 namespace ContentPOC
 {
-    [ApiVersion("1")]
-    [Route("api/v{version:apiVersion}/news-ingestor")]
+    [Route("api/news-ingestor")]
     public class NewsIngestorController : Controller
     {
         private IConverter<News> _converter;

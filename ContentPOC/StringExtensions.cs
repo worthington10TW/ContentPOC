@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-
-namespace ContentPOC.Converter
+﻿namespace ContentPOC.Converter
 {
     public static class StringExtensions
     {
