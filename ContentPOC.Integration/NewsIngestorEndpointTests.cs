@@ -1,8 +1,10 @@
-﻿using ContentPOC.NewsIngestor;
+﻿using ContentPOC.HostedService;
+using ContentPOC.NewsIngestor;
 using ContentPOC.Unit;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -16,10 +18,14 @@ namespace ContentPOC.Integration
         private readonly TestServer _testServer;
         private readonly HttpClient _client;
         private readonly HttpResponseMessage _response;
+        private readonly Mock<IUnitNotificationQueue> _mockHub = new Mock<IUnitNotificationQueue>();
+        private const string ID = "CB9A4CE3";
 
         public NewsIngestorEndpointTests()
         {
-            _testServer = new TestServer(Program.WebHostBuilder());
+            var builder = Program.WebHostBuilder();
+            builder.ConfigureTestServices(x => x.AddTransient(s => _mockHub.Object));
+            _testServer = new TestServer(builder);
             _client = _testServer.CreateClient();
             var content = new StringContent(
                     _testXml,
@@ -54,7 +60,7 @@ namespace ContentPOC.Integration
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
             _response.Headers.Location.ToString()
-            .Should().Be("news/CB9A4CE3");
+            .Should().Be($"news/{ID}");
 
         [Fact]
         public async Task ShouldReturnNotFound_WhenIdDoesNotExist()
@@ -67,19 +73,23 @@ namespace ContentPOC.Integration
         [Fact]
         public async Task ShouldGetInsertedUnit()
         {
-            var getResponse = await _client.GetAsync("/api/news/CB9A4CE3");
+            var getResponse = await _client.GetAsync($"/api/news/{ID}");
 
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await getResponse.Content.ReadAsAsync<News>();
             AssertNewsIsSameAsTestXml(content);
         }
 
+        [Fact]
+        public void ShouldNotifyWhenSuccessfullyPosted() =>
+             _mockHub.Verify(x => x.Queue(It.Is<IUnit>(unit => unit.Id.Value == ID)));
+
         private void AssertNewsIsSameAsTestXml(News content)
         {
             content.Headline.Should().Be("This is a headline");
             content.Summary.Should().Be("This is a summary");
             content.Story.Should().Be("Lorem ipsum");
-            content.Href.Should().Be("news/CB9A4CE3");
+            content.Href.Should().Be($"news/{ID}");
         }
 
         private readonly string _testXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
