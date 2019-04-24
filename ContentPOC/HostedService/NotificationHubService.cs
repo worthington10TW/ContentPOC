@@ -15,7 +15,6 @@ namespace ContentPOC.HostedService
             _taskQueue = taskQueue;
             _hub = hub;
         }
-            
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace ContentPOC.NewsIngestor
 {
     public interface IRepository
     {
-        IUnit Save(IUnit unit);
+        Task<IUnit> SaveAsync(IUnit unit);
 
         IUnit Get(Id id);
     }
@@ -22,9 +23,7 @@ namespace ContentPOC.NewsIngestor
             return value;
         }
 
-        public IUnit Save(IUnit unit) =>
-            _store.AddOrUpdate(unit.Id.Value, unit, (key, existingUnit) => existingUnit = unit);
-
-
+        public Task<IUnit> SaveAsync(IUnit unit) =>
+            Task.FromResult(_store.AddOrUpdate(unit.Id.Value, unit, (key, existingUnit) => existingUnit = unit));
     }
 }

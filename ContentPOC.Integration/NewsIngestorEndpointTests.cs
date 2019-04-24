@@ -4,8 +4,10 @@ using ContentPOC.Unit;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Moq;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -24,7 +26,8 @@ namespace ContentPOC.Integration
         public NewsIngestorEndpointTests()
         {
             var builder = Program.WebHostBuilder();
-            builder.ConfigureTestServices(x => x.AddTransient(s => _mockHub.Object));
+            builder.ConfigureTestServices(services => RemoveBackgroundService(services));
+            builder.ConfigureTestServices(x => x.AddSingleton(_mockHub.Object));
             _testServer = new TestServer(builder);
             _client = _testServer.CreateClient();
             var content = new StringContent(
@@ -35,15 +38,6 @@ namespace ContentPOC.Integration
                 .PostAsync("/api/news", content)
                 .GetAwaiter()
                 .GetResult();
-        }
-
-        public void Dispose()
-        {
-            if (_testServer.Host.Services.GetService<IRepository>() is InMemoryStore store)
-                store.Reset();
-
-            _testServer.Dispose();
-            _client.Dispose();
         }
 
         [Fact]
@@ -91,6 +85,21 @@ namespace ContentPOC.Integration
             content.Story.Should().Be("Lorem ipsum");
             content.Href.Should().Be($"news/{ID}");
         }
+        private static void RemoveBackgroundService(IServiceCollection services)
+        {
+            var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IHostedService));
+            services.Remove(serviceDescriptor);
+        }
+
+        public void Dispose()
+        {
+            if (_testServer.Host.Services.GetService<IRepository>() is InMemoryStore store)
+                store.Reset();
+
+            _testServer.Dispose();
+            _client.Dispose();
+        }
+
 
         private readonly string _testXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <news>

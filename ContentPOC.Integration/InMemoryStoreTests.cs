@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace ContentPOC.Integration
@@ -25,21 +26,21 @@ namespace ContentPOC.Integration
                 .BeNull();
 
         [Fact]
-        public void WhenNewResult_ShouldInsert()
+        public async Task WhenNewResult_ShouldInsert()
         {
             var id = new Id("amazingUnit");
             var unit = new TestUnit { Id = id, Href = "i-live/here" };
-            _store.Save(unit);
+            _store.SaveAsync(unit);
 
             _store.Get(id).Should().BeEquivalentTo(unit);
         }
 
         [Fact]
-        public void WhenClearning_ShouldBeEmpty()
+        public async Task WhenClearning_ShouldBeEmpty()
         {
             var id = new Id("amazingUnit");
             var unit = new TestUnit { Id = id, Href = "i-live/here" };
-            _store.Save(unit);
+            _store.SaveAsync(unit);
             _store.Get(id).Should().BeEquivalentTo(unit);
             _store.Reset();
 
@@ -47,11 +48,11 @@ namespace ContentPOC.Integration
         }
 
         [Fact]
-        public void WhenIdMatches_ShouldReplace()
+        public async Task WhenIdMatches_ShouldReplace()
         {
-            _store.Save(new TestUnit { Id = new Id("amazingUnit"), Href = "i-live/here" });
+            await _store.SaveAsync(new TestUnit { Id = new Id("amazingUnit"), Href = "i-live/here" });
             var toReplace = new TestUnit { Id = new Id("amazingUnit"), Href = "i-dont-look/the-same" };
-            _store.Save(toReplace);
+            await _store.SaveAsync(toReplace);
 
             _store.Get(new Id("amazingUnit")).Should().BeEquivalentTo(toReplace);
         }
