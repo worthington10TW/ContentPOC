@@ -21,6 +21,7 @@ namespace ContentPOC
             services
                 .AddSingleton<IConverter<Unit.News>>(x => new NewsConverter())
                 .AddSingleton<IRepository, InMemoryStore>()
+                .AddTransient<NewsManager>()
                 .AddSingleton<NewsConverter>();
         }
 

@@ -11,14 +11,9 @@ namespace ContentPOC
     [Route("api/news")]
     public class NewsIngestorController : Controller
     {
-        private IConverter<News> _converter;
-        private IRepository _repository;
+        private readonly NewsManager _manager;
 
-        public NewsIngestorController(IConverter<News> converter, IRepository repository)
-        {
-            _converter = converter;
-            _repository = repository;
-        }
+        public NewsIngestorController(NewsManager manager) => _manager = manager;
 
         //TODO lock down to XML
         [HttpPost]
@@ -29,8 +24,7 @@ namespace ContentPOC
                 var request = 
                     (NewsRequestXml)new XmlSerializer(typeof(NewsRequestXml))
                     .Deserialize(reader);
-                var result = await _converter.CreateAsync(request);
-                _repository.Save(result);
+               var result = await _manager.SaveAsync(request);
                 return Created(result.Href, result);
             }
         }
@@ -38,7 +32,7 @@ namespace ContentPOC
         [HttpGet("{id}")]
         public IActionResult Get(string id)
         {
-            var result = _repository.Get(new Id(id));
+            var result = _manager.Get(new Id(id));
             if (result == null)
                 return NotFound();
 
