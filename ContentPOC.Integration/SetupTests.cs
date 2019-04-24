@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;    
-using Microsoft.Extensions.DependencyInjection;
-using Xunit;
+﻿using ContentPOC.Converter;
+using ContentPOC.NewsIngestor;
 using FluentAssertions;
-using ContentPOC.Converter;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using Xunit;
 
 namespace ContentPOC.Integration
 {
@@ -12,18 +13,32 @@ namespace ContentPOC.Integration
     {
         private readonly IWebHostBuilder _builder = Program.WebHostBuilder();
         private readonly TestServer _server;
+        private readonly IServiceProvider _provider;
 
-        public SetupTests() => _server = new TestServer(_builder);
+        public SetupTests()
+        {
+            _server = new TestServer(_builder);
+            _provider = _server.Host.Services;
+                }
 
         public void Dispose() => _server?.Dispose();
 
         [Fact]
-        public void ShouldRegisterIConverterNews()
+        public void ShouldCreateNewsConverter_WhenCallingIConverter()
         {
-            var converter = _server.Host.Services.GetService<IConverter<Unit.News>>();  
-            
+            var converter = _provider.GetService<IConverter<Unit.News>>();
+
             converter.Should().NotBeNull();
             converter.Should().BeOfType<NewsConverter>();
+        }
+
+        [Fact]
+        public void ShouldCreateInMemoryStore_WhenCallingIRepository()
+        {
+            var repository = _provider.GetService<IRepository>();
+
+            repository.Should().NotBeNull();
+            repository.Should().BeOfType<InMemoryStore>();
         }
 
     }
