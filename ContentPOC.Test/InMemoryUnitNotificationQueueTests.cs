@@ -27,10 +27,6 @@ namespace ContentPOC.Test
             pop2.Should().Be(unit2);
             var pop3 = await _queue.DequeueAsync(CancellationToken.None);
             pop3.Should().Be(unit3);
-
-
-            var popEmpty = await _queue.DequeueAsync(CancellationToken.None);
-            popEmpty.Should().BeNull();
         }
 
         [Fact]
