@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 
 namespace ContentPOC.NewsIngestor
 {
@@ -12,19 +11,19 @@ namespace ContentPOC.NewsIngestor
 
     public class InMemoryStore : IRepository
     {
-        private readonly ConcurrentDictionary<Id, IUnit> _store = 
-            new ConcurrentDictionary<Id, IUnit>();
+        private readonly ConcurrentDictionary<string, IUnit> _store = 
+            new ConcurrentDictionary<string, IUnit>();
 
         public void Reset() => _store.Clear();
 
         public IUnit Get(Id id)
         {
-            _store.TryGetValue(id, out var value);
+            _store.TryGetValue(id.Value, out var value);
             return value;
         }
 
         public IUnit Save(IUnit unit) =>
-            _store.AddOrUpdate(unit.Id, unit, (key, existingUnit) => existingUnit = unit);
+            _store.AddOrUpdate(unit.Id.Value, unit, (key, existingUnit) => existingUnit = unit);
 
 
     }

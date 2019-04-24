@@ -1,6 +1,8 @@
-﻿using ContentPOC.Unit;
+﻿using ContentPOC.NewsIngestor;
+using ContentPOC.Unit;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -24,13 +26,16 @@ namespace ContentPOC.Integration
                     System.Text.Encoding.UTF8,
                     "application/xml");
             _response = _client
-                .PostAsync("/api/news-ingestor", content)
+                .PostAsync("/api/news", content)
                 .GetAwaiter()
                 .GetResult();
         }
 
         public void Dispose()
         {
+            if (_testServer.Host.Services.GetService<IRepository>() is InMemoryStore store)
+                store.Reset();
+
             _testServer.Dispose();
             _client.Dispose();
         }
@@ -43,16 +48,39 @@ namespace ContentPOC.Integration
         public async Task ShouldReturnNewsResponse_WhenPostingXml()
         {
             var content = await _response.Content.ReadAsAsync<News>();
-            content.Headline.Should().Be("This is a headline");
-            content.Summary.Should().Be("This is a summary");
-            content.Story.Should().Be("Lorem ipsum");
-            content.Href.Should().Be("news/CB9A4CE3");
+            AssertNewsIsSameAsTestXml(content);
         }
 
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
             _response.Headers.Location.ToString()
             .Should().Be("news/CB9A4CE3");
+
+        [Fact]
+        public async Task ShouldReturnNotFound_WhenIdDoesNotExist()
+        {
+            var getResponse = await _client.GetAsync($"/api/news/{Guid.NewGuid()}");
+
+            getResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task ShouldGetInsertedUnit()
+        {
+            var getResponse = await _client.GetAsync("/api/news/CB9A4CE3");
+
+            getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var content = await getResponse.Content.ReadAsAsync<News>();
+            AssertNewsIsSameAsTestXml(content);
+        }
+
+        private void AssertNewsIsSameAsTestXml(News content)
+        {
+            content.Headline.Should().Be("This is a headline");
+            content.Summary.Should().Be("This is a summary");
+            content.Story.Should().Be("Lorem ipsum");
+            content.Href.Should().Be("news/CB9A4CE3");
+        }
 
         private readonly string _testXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <news>

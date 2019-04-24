@@ -49,12 +49,11 @@ namespace ContentPOC.Integration
         [Fact]
         public void WhenIdMatches_ShouldReplace()
         {
-            var id = new Id("amazingUnit");
-            _store.Save(new TestUnit { Id = id, Href = "i-live/here" });
-            var toReplace = new TestUnit { Id = id, Href = "i-dont-look/the-same" };
+            _store.Save(new TestUnit { Id = new Id("amazingUnit"), Href = "i-live/here" });
+            var toReplace = new TestUnit { Id = new Id("amazingUnit"), Href = "i-dont-look/the-same" };
             _store.Save(toReplace);
 
-            _store.Get(id).Should().BeEquivalentTo(toReplace);
+            _store.Get(new Id("amazingUnit")).Should().BeEquivalentTo(toReplace);
         }
         
         public void Dispose()
