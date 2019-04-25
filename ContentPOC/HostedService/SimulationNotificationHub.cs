@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ContentPOC.Model;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 

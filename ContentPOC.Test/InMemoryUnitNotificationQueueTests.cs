@@ -1,5 +1,7 @@
 ﻿using ContentPOC.HostedService;
+using ContentPOC.Model;
 using ContentPOC.Unit;
+using ContentPOC.Unit.Model;
 using FluentAssertions;
 using System;
 using System.Threading;

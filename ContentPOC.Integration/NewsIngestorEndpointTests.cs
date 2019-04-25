@@ -1,5 +1,6 @@
 ﻿using ContentPOC.DAL;
 using ContentPOC.HostedService;
+using ContentPOC.Model;
 using ContentPOC.Unit;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
@@ -24,7 +25,7 @@ namespace ContentPOC.Integration
         private readonly HttpClient _client;
         private readonly HttpResponseMessage _response;
         private readonly Mock<IUnitNotificationQueue> _mockHub = new Mock<IUnitNotificationQueue>();
-        private const string ID = "17867F64";
+        private const string ID = "A357D733";
 
         public NewsIngestorEndpointTests()
         {
@@ -52,12 +53,12 @@ namespace ContentPOC.Integration
         {
             var content = await _response.Content.ReadAsStringAsync();
             content.Should().Be(_responseJson);
-        }
 
+        }
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
             _response.Headers.Location.ToString()
-            .Should().Be($"news/{ID}");
+            .Should().Be($"newsitem/{ID}");
 
         [Fact]
         public async Task ShouldReturnNotFound_WhenIdDoesNotExist()
@@ -104,6 +105,6 @@ namespace ContentPOC.Integration
 <story>Lorem ipsum</story>
 </news>";
 
-        private readonly string _responseJson = @"[{""unitType"":""Headline"",""value"":""This is a headline"",""meta"":{}},{""unitType"":""Summary"",""value"":""This is a summary"",""meta"":{}},{""unitType"":""Story"",""value"":""Lorem ipsum"",""meta"":{}}]";
+        private readonly string _responseJson = @"[{""unitType"":""Headline"",""value"":""This is a headline"",""meta"":{}},{""unitType"":""StorySummary"",""value"":""This is a summary"",""meta"":{}},{""unitType"":""StoryText"",""value"":""Lorem ipsum"",""meta"":{}}]";
     }
 }

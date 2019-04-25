@@ -1,19 +1,22 @@
 ﻿using ContentPOC.Converter;
 using ContentPOC.DAL;
 using ContentPOC.HostedService;
+using ContentPOC.Model;
 using ContentPOC.Unit;
+using ContentPOC.Unit.Model;
+using ContentPOC.Unit.Model.News;
 using System.Threading.Tasks;
 
 namespace ContentPOC.NewsIngestor
 {
     public class NewsManager
     {
-        private readonly IConverter<News> _converter;
+        private readonly IConverter<NewsItem> _converter;
         private readonly IRepository _repository;
         private readonly IUnitNotificationQueue _queue;
 
         public NewsManager(
-            IConverter<News> converter,
+            IConverter<NewsItem> converter,
             IRepository repository,
             IUnitNotificationQueue queue)
         {

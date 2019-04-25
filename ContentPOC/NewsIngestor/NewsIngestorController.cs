@@ -1,5 +1,6 @@
 ﻿using ContentPOC.NewsIngestor;
 using ContentPOC.Unit;
+using ContentPOC.Unit.Model;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;

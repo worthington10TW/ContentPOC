@@ -2,6 +2,7 @@
 using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.NewsIngestor;
+using ContentPOC.Unit.Model.News;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,7 @@ namespace ContentPOC
             services.AddMvcCore();
 
             services
-                .AddSingleton<IConverter<Unit.News>>(x => new NewsConverter())
+                .AddSingleton<IConverter<NewsItem>>(x => new NewsConverter())
                 .AddSingleton<IRepository, InMemoryStore>()
                 .AddTransient<NewsManager>()
                 .AddSingleton<NewsConverter>()

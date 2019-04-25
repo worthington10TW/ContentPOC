@@ -1,4 +1,5 @@
-﻿using ContentPOC.Unit;
+﻿using ContentPOC.Model;
+using ContentPOC.Unit.Model;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 

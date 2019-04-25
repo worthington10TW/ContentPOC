@@ -1,6 +1,7 @@
 ﻿using ContentPOC.Unit;
+using ContentPOC.Unit.Model;
 
-namespace ContentPOC
+namespace ContentPOC.Model
 {
     public interface IUnit
     {

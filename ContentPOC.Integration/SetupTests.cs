@@ -1,7 +1,7 @@
 ﻿using ContentPOC.Converter;
 using ContentPOC.DAL;
 using ContentPOC.HostedService;
-using ContentPOC.NewsIngestor;
+using ContentPOC.Unit.Model.News;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -30,7 +30,7 @@ namespace ContentPOC.Integration
         [Fact]
         public void ShouldCreateNewsConverter_WhenCallingIConverter()
         {
-            var converter = _provider.GetService<IConverter<Unit.News>>();
+            var converter = _provider.GetService<IConverter<NewsItem>>();
 
             converter.Should().NotBeNull();
             converter.Should().BeOfType<NewsConverter>();

@@ -1,5 +1,7 @@
 ﻿using ContentPOC.DAL;
+using ContentPOC.Model;
 using ContentPOC.Unit;
+using ContentPOC.Unit.Model;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

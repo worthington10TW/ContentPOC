@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using ContentPOC.Model;
+using System.Threading.Tasks;
 
 namespace ContentPOC.Converter
 {

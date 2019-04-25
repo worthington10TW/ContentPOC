@@ -1,7 +1,8 @@
 ﻿using ContentPOC.Converter;
+using ContentPOC.Model;
 using Newtonsoft.Json;
 
-namespace ContentPOC.Unit
+namespace ContentPOC.Unit.Model
 {
     public abstract class Unit : IUnit
     {
