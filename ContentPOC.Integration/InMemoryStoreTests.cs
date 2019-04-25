@@ -41,7 +41,7 @@ namespace ContentPOC.Integration
         }
 
         [Fact]
-        public async Task WhenClearning_ShouldBeEmpty()
+        public async Task WhenClearing_ShouldBeEmpty()
         {
             var id = new Id("amazingUnit");
             var unit = new TestUnit
