@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using ContentPOC.Unit;
 using System.Collections.Generic;
 
 namespace ContentPOC
 {
-    public abstract class UnitCollection : Unit.Unit
+    public abstract class UnitCollection : List<IUnit>, IUnit
     {
-        List<IUnit> Units { get; }
+        public abstract string UnitType { get; }
+
+        public Meta Meta => new Meta(this);
     }
 }

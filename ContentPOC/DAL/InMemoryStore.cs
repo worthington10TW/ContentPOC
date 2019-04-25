@@ -1,11 +1,12 @@
-﻿using System.Collections.Concurrent;
+﻿using ContentPOC.Unit;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 namespace ContentPOC.DAL
 {
     public class InMemoryStore : IRepository
     {
-        private readonly ConcurrentDictionary<string, IUnit> _store = 
+        private readonly ConcurrentDictionary<string, IUnit> _store =
             new ConcurrentDictionary<string, IUnit>();
 
         public void Reset() => _store.Clear();
@@ -16,7 +17,22 @@ namespace ContentPOC.DAL
             return value;
         }
 
-        public Task<IUnit> SaveAsync(IUnit unit) =>
-            Task.FromResult(_store.AddOrUpdate(unit.Id.Value, unit, (key, existingUnit) => existingUnit = unit));
+        public Task<IUnit> SaveAsync(IUnit unit)
+        {
+            //TODO This sucks, should be done better.....
+            var collection = unit as UnitCollection;
+            if (collection != null)
+                foreach (var u in unit as UnitCollection)
+                    Save(u);
+            
+            return Task.FromResult(Save(unit));
+        }
+
+        private IUnit Save(IUnit unit) =>
+            _store.AddOrUpdate(
+                unit.Meta.Id.Value,
+                unit,
+                (key, existingUnit) => existingUnit = unit);
+
     }
 }

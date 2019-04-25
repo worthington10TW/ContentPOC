@@ -1,5 +1,7 @@
 ﻿using ContentPOC.NewsIngestor;
+using ContentPOC.Unit;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -23,7 +25,10 @@ namespace ContentPOC
                     (NewsRequestXml)new XmlSerializer(typeof(NewsRequestXml))
                     .Deserialize(reader);
                var result = await _manager.SaveAsync(request);
-                return Created(result.Href, result);
+
+                //TODO I'm too lazy to make a real view model, this will do for now
+                dynamic value = result;
+                return Created(result.Meta.Href, result);
             }
         }
 
@@ -34,7 +39,8 @@ namespace ContentPOC
             if (result == null)
                 return NotFound();
 
-            return Ok(result);
+            dynamic value = result;
+            return Ok(value);
         }
     }
 }

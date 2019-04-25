@@ -1,6 +1,5 @@
 ﻿using ContentPOC.DAL;
 using ContentPOC.HostedService;
-using ContentPOC.NewsIngestor;
 using ContentPOC.Unit;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
@@ -22,7 +21,7 @@ namespace ContentPOC.Integration
         private readonly HttpClient _client;
         private readonly HttpResponseMessage _response;
         private readonly Mock<IUnitNotificationQueue> _mockHub = new Mock<IUnitNotificationQueue>();
-        private const string ID = "34CCB675";
+        private const string ID = "17867F64";
 
         public NewsIngestorEndpointTests()
         {
@@ -48,8 +47,8 @@ namespace ContentPOC.Integration
         [Fact]
         public async Task ShouldReturnNewsResponse_WhenPostingXml()
         {
-            var content = await _response.Content.ReadAsAsync<News>();
-            AssertNewsIsSameAsTestXml(content);
+            var content = await _response.Content.ReadAsStringAsync();
+            content.Should().Be(_responseJson);
         }
 
         [Fact]
@@ -71,20 +70,24 @@ namespace ContentPOC.Integration
             var getResponse = await _client.GetAsync($"/api/news/{ID}");
 
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var content = await getResponse.Content.ReadAsAsync<News>();
-            AssertNewsIsSameAsTestXml(content);
+            var content = await getResponse.Content.ReadAsStringAsync();
+            content.Should().Be(_responseJson);
         }
 
         [Fact]
         public void ShouldNotifyWhenSuccessfullyPosted() =>
-             _mockHub.Verify(x => x.Queue(It.Is<IUnit>(unit => unit.Id.Value == ID)));
+             _mockHub.Verify(x => x.Queue(It.Is<IUnit>(unit => unit.Meta.Id.Value == ID)));
 
-        private void AssertNewsIsSameAsTestXml(News content)
+        private void AssertNewsIsSameAsTestXml(dynamic content)
         {
-            content.Headline.ToString().Should().Be("This is a headline");
-            content.Summary.ToString().Should().Be("This is a summary");
-            content.Story.ToString().Should().Be("Lorem ipsum");
-            content.Href.ToString().Should().Be($"news/{ID}");
+            Headline headline = content[0];            
+            headline.Value.Should().Be("This is a headline");
+
+            Summary summary = content[1];
+            summary.Value.Should().Be("This is a summary");
+
+            Story story = content[2];
+            story.Should().Be($"news/{ID}");
         }
 
         private static void RemoveBackgroundService(IServiceCollection services)
@@ -109,5 +112,7 @@ namespace ContentPOC.Integration
 <summary>This is a summary</summary>
 <story>Lorem ipsum</story>
 </news>";
+
+        private readonly string _responseJson = @"[{""unitType"":""Headline"",""value"":""This is a headline"",""meta"":{}},{""unitType"":""Summary"",""value"":""This is a summary"",""meta"":{}},{""unitType"":""Story"",""value"":""Lorem ipsum"",""meta"":{}}]";
     }
 }

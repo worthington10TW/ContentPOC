@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using ContentPOC.Unit;
+using System.Threading.Tasks;
 
 namespace ContentPOC.DAL
 {

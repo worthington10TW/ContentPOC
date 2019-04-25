@@ -24,7 +24,7 @@ namespace ContentPOC.Integration
         public void ShouldNotify_WhenUnitIsAddedToQueue()
         {
             var queue = _testServer.Host.Services.GetService<IUnitNotificationQueue>();
-            var unit = new News { Headline = new Headline("BEST HEADLINE EVER") };
+            var unit = new News { new Headline("BEST HEADLINE EVER") };
             queue.Queue(unit);
 
             _mockHub.Verify(x => x.Alert(unit));

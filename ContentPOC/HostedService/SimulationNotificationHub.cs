@@ -20,7 +20,7 @@ namespace ContentPOC.HostedService
             //simulate notification, sleep 5 seconds
             Thread.Sleep(new TimeSpan(0, 0, 5));
             _logger.LogInformation("****UNIT HAS BEEN UPDATED****");
-            _logger.LogInformation($"****{unit.Id}****");
+            _logger.LogInformation($"****{unit.Meta.Id}****");
             _logger.LogInformation("********************************");
             _logger.LogInformation(unit.ToString());
             _logger.LogInformation("********************************");

@@ -9,18 +9,25 @@ namespace ContentPOC.Test.Unit
     {
         protected static News _news => new News
         {
-            Headline = new Headline("STUFF"),
-            Summary = new Summary("things"),
-            Story = new Story("And stories")
+            new Headline("STUFF"),
+            new Summary("things"),
+            new Story("And stories")
         };
 
         [Fact]
-        public void WhenStringifyingObject_ShouldReturnValidJson() =>
-            JsonConvert.DeserializeObject<News>(_news.ToString())
-            .Should().BeEquivalentTo(_news);
+        public void WhenNewsGettingUrl_ShouldReturnHashCode() =>
+            _news.Meta.Href.Should().Be("news/17867F64");
         
         [Fact]
-        public void WhenGettingUrl_ShouldReturnHashCode() =>
-            _news.Href.Should().Be("news/9AD1869F");
+        public void WhenHeadinlineGettingUrl_ShouldReturnHashCode() =>
+            _news[0].Meta.Href.Should().Be("headline/17867F64");
+
+        [Fact]
+        public void WhenSummaryGettingUrl_ShouldReturnHashCode() =>
+            _news[1].Meta.Href.Should().Be("summary/17867F64");
+
+        [Fact]
+        public void WhenStoryGettingUrl_ShouldReturnHashCode() =>
+            _news[2].Meta.Href.Should().Be("story/17867F64");
     }
 }

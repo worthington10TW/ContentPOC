@@ -1,4 +1,5 @@
 ﻿using ContentPOC.HostedService;
+using ContentPOC.Unit;
 using FluentAssertions;
 using System;
 using System.Threading;
@@ -41,6 +42,10 @@ namespace ContentPOC.Test
             public string Href { get; set; }
 
             public Id Id { get; set; }
+
+            public string UnitType => nameof(TestUnit);
+
+            public Meta Meta => new Meta(this);
         }
     }
 }
