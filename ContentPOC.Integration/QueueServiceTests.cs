@@ -8,6 +8,9 @@ using Xunit;
 
 namespace ContentPOC.Integration
 {
+
+    // TODO: Change to a queue which takes events (with HREF, ID (both meta) and unit type)
+
     public class QueueServiceTests : IDisposable
     {
         private readonly TestServer _testServer;
