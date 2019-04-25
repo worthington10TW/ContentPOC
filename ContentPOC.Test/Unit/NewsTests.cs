@@ -9,9 +9,9 @@ namespace ContentPOC.Test.Unit
     {
         protected static News _news => new News
         {
-            Headline = "STUFF",
-            Summary = "things",
-            Story = "And stories"
+            Headline = new Headline("STUFF"),
+            Summary = new Summary("things"),
+            Story = new Story("And stories")
         };
 
         [Fact]
@@ -21,6 +21,6 @@ namespace ContentPOC.Test.Unit
         
         [Fact]
         public void WhenGettingUrl_ShouldReturnHashCode() =>
-            _news.Href.Should().Be("news/E0B8D965");
+            _news.Href.Should().Be("news/9AD1869F");
     }
 }

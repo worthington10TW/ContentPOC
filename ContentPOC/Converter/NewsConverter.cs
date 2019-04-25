@@ -9,9 +9,9 @@ namespace ContentPOC.Converter
         {
             return new News
             {
-                Headline = xml.Headline,
-                Summary = xml.Summary,
-                Story = xml.Story
+                Headline = new Headline(xml.Headline),
+                Summary = new Summary(xml.Summary),
+                Story = new Story(xml.Story)
             };
         }
     }

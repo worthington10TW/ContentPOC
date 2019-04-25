@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
 
 namespace ContentPOC.HostedService
@@ -10,17 +11,19 @@ namespace ContentPOC.HostedService
 
     public class SimulationNotificationHub : INotificationHub
     {
+        private readonly ILogger<SimulationNotificationHub> _logger;
+
+        public SimulationNotificationHub(ILogger<SimulationNotificationHub> logger) => _logger = logger;
+
         public void Alert(IUnit unit)
         {
             //simulate notification, sleep 5 seconds
             Thread.Sleep(new TimeSpan(0, 0, 5));
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.WriteLine("****UNIT HAS BEEN UPDATED****");
-            Console.WriteLine($"****{unit.Id}****");
-            Console.WriteLine("********");
-            Console.WriteLine(unit.ToString());
-            Console.WriteLine("********");
-            Console.BackgroundColor = ConsoleColor.Black;
+            _logger.LogInformation("****UNIT HAS BEEN UPDATED****");
+            _logger.LogInformation($"****{unit.Id}****");
+            _logger.LogInformation("********************************");
+            _logger.LogInformation(unit.ToString());
+            _logger.LogInformation("********************************");
         }
     }
 }

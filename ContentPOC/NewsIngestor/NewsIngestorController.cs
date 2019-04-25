@@ -1,6 +1,4 @@
-﻿using ContentPOC.Converter;
-using ContentPOC.NewsIngestor;
-using ContentPOC.Unit;
+﻿using ContentPOC.NewsIngestor;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Xml;

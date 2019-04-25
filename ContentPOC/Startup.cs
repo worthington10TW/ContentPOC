@@ -1,4 +1,5 @@
 ﻿using ContentPOC.Converter;
+using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.NewsIngestor;
 using Microsoft.AspNetCore.Builder;
@@ -13,7 +14,8 @@ namespace ContentPOC
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddSwaggerGen(options => options.OperationFilter<SwaggerDefaultValues>())
+                .AddLogging()                
+                .AddSwaggerGen()
                 .AddMvc()
                 .AddXmlDataContractSerializerFormatters()
                 .AddXmlSerializerFormatters();
@@ -34,8 +36,8 @@ namespace ContentPOC
         {
             (env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseStatusCodePages())
                 .UseStaticFiles()
-                .UseSwagger()
-                .UseSwaggerUI()
+                .UseSwagger()                
+                .UseSwaggerUI()                
                 .UseMvc();
         }
     }

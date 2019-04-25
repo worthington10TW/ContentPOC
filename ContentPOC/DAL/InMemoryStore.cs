@@ -1,15 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace ContentPOC.NewsIngestor
+namespace ContentPOC.DAL
 {
-    public interface IRepository
-    {
-        Task<IUnit> SaveAsync(IUnit unit);
-
-        IUnit Get(Id id);
-    }
-
     public class InMemoryStore : IRepository
     {
         private readonly ConcurrentDictionary<string, IUnit> _store = 

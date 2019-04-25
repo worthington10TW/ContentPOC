@@ -12,7 +12,7 @@ namespace ContentPOC
             WebHost.CreateDefaultBuilder(args)
                 .UseKestrel()
                 .UseDefaultServiceProvider(
-                    (context, options) => 
+                    (context, options) =>
                         options.ValidateScopes = context.HostingEnvironment.IsDevelopment())
                 .UseStartup<Startup>();
     }

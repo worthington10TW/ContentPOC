@@ -1,4 +1,5 @@
 ﻿using ContentPOC.Converter;
+using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.Unit;
 using System.Threading.Tasks;

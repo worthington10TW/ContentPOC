@@ -1,4 +1,5 @@
-﻿using ContentPOC.HostedService;
+﻿using ContentPOC.DAL;
+using ContentPOC.HostedService;
 using ContentPOC.NewsIngestor;
 using ContentPOC.Unit;
 using FluentAssertions;
@@ -21,7 +22,7 @@ namespace ContentPOC.Integration
         private readonly HttpClient _client;
         private readonly HttpResponseMessage _response;
         private readonly Mock<IUnitNotificationQueue> _mockHub = new Mock<IUnitNotificationQueue>();
-        private const string ID = "CB9A4CE3";
+        private const string ID = "34CCB675";
 
         public NewsIngestorEndpointTests()
         {
@@ -80,11 +81,12 @@ namespace ContentPOC.Integration
 
         private void AssertNewsIsSameAsTestXml(News content)
         {
-            content.Headline.Should().Be("This is a headline");
-            content.Summary.Should().Be("This is a summary");
-            content.Story.Should().Be("Lorem ipsum");
-            content.Href.Should().Be($"news/{ID}");
+            content.Headline.ToString().Should().Be("This is a headline");
+            content.Summary.ToString().Should().Be("This is a summary");
+            content.Story.ToString().Should().Be("Lorem ipsum");
+            content.Href.ToString().Should().Be($"news/{ID}");
         }
+
         private static void RemoveBackgroundService(IServiceCollection services)
         {
             var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IHostedService));

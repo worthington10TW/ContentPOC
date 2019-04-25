@@ -1,4 +1,5 @@
-﻿using ContentPOC.NewsIngestor;
+﻿using ContentPOC.DAL;
+using ContentPOC.NewsIngestor;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
