@@ -17,19 +17,19 @@ namespace ContentPOC.Test.Unit
 
         [Fact]
         public void WhenNewsGettingUrl_ShouldReturnHashCode() =>
-            _news.Meta.Href.Should().Be("newsitem/A357D733");
+            _news.Meta.Href.Should().Be("news/A357D733");
         
         //TODO unit type needs to follow URL convention i.e story-text
         [Fact]
         public void WhenHeadinlineGettingUrl_ShouldReturnHashCode() =>
-            _news[0].Meta.Href.Should().Be("headline/A357D733");
+            _news[0].Meta.Href.Should().Be("news/headline/A357D733");
 
         [Fact]
         public void WhenSummaryGettingUrl_ShouldReturnHashCode() =>
-            _news[1].Meta.Href.Should().Be("storysummary/A357D733");
+            _news[1].Meta.Href.Should().Be("news/story-summary/A357D733");
 
         [Fact]
         public void WhenStoryGettingUrl_ShouldReturnHashCode() =>
-            _news[2].Meta.Href.Should().Be("storytext/A357D733");
+            _news[2].Meta.Href.Should().Be("news/story-text/A357D733");
     }
 }

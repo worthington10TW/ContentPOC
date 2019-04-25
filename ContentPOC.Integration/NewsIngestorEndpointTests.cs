@@ -105,6 +105,6 @@ namespace ContentPOC.Integration
 <story>Lorem ipsum</story>
 </news>";
 
-        private readonly string _responseJson = @"[{""unitType"":""Headline"",""value"":""This is a headline"",""meta"":{}},{""unitType"":""StorySummary"",""value"":""This is a summary"",""meta"":{}},{""unitType"":""StoryText"",""value"":""Lorem ipsum"",""meta"":{}}]";
+        private readonly string _responseJson = @"[{""unitType"":""headline"",""value"":""This is a headline"",""meta"":{}},{""unitType"":""news/story-summary"",""value"":""This is a summary"",""meta"":{}},{""unitType"":""news/story-text"",""value"":""Lorem ipsum"",""meta"":{}}]";
     }
 }

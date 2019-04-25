@@ -86,7 +86,7 @@ namespace ContentPOC.Integration
         // TODO: tightly coupling ID to hash causes an excessively rigid codebase.  Decouple
         public class TestUnit : IUnit
         {
-            public string UnitType => nameof(TestUnit);
+            public string Namespace => nameof(TestUnit);
 
             public Meta Meta { get; set; }
 

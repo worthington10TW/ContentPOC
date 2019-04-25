@@ -24,8 +24,7 @@ namespace ContentPOC.DAL
             // TODO: run in parallel
             var collection = unit as UnitCollection;
             if (collection != null)
-                foreach (var u in unit as UnitCollection)
-                    Save(u); 
+                collection.ForEach(u => Save(u));
             
             // TODO: this really needs IUnit not to be a DTO.  (We need to map so we don't bleed down.)
             return Task.FromResult(Save(unit)); 

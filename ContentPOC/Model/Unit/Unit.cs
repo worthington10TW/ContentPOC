@@ -8,7 +8,7 @@ namespace ContentPOC.Unit.Model
     {
         public Meta Meta => new Meta(this);
 
-        public abstract string UnitType { get; }
+        public abstract string Namespace { get; }
 
         public override string ToString() => JsonConvert.SerializeObject(this);
     }
@@ -18,7 +18,7 @@ namespace ContentPOC.Unit.Model
         public Meta(IUnit unit)
         {
             Id = new Id(string.Format("{0:X}", ToString()?.GetStableHashCode()));
-            Href = $"{unit?.UnitType?.ToLower()}/{Id?.Value}";
+            Href = $"{unit?.Namespace}/{Id?.Value}";
         }
 
         [JsonIgnore]

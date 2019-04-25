@@ -7,6 +7,6 @@ namespace ContentPOC.Model
     {
         Meta Meta { get; }
         
-        string UnitType { get; }
+        string Namespace { get; }
     }
 }

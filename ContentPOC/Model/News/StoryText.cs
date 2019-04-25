@@ -4,7 +4,7 @@
     {
         public StoryText(string value) => Value = value;
 
-        public override string UnitType => nameof(StoryText);
+        public override string Namespace => "news/story-text";
 
         public string Value { get; }
 

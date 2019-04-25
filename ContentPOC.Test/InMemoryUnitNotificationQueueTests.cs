@@ -45,7 +45,7 @@ namespace ContentPOC.Test
 
             public Id Id { get; set; }
 
-            public string UnitType => nameof(TestUnit);
+            public string Namespace => nameof(TestUnit);
 
             public Meta Meta => new Meta(this);
         }

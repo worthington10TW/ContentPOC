@@ -4,6 +4,6 @@ namespace ContentPOC.Unit.Model.News
 {
     public class NewsItem : UnitCollection
     { 
-        public override string UnitType => nameof(NewsItem);
+        public override string Namespace => "news";
     }
 }

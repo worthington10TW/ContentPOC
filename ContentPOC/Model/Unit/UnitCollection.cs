@@ -6,7 +6,7 @@ namespace ContentPOC.Model
 {
     public abstract class UnitCollection : List<IUnit>, IUnit
     {
-        public abstract string UnitType { get; }
+        public abstract string Namespace { get; }
 
         public Meta Meta => new Meta(this);
     }
