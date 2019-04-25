@@ -77,19 +77,7 @@ namespace ContentPOC.Integration
         [Fact]
         public void ShouldNotifyWhenSuccessfullyPosted() =>
              _mockHub.Verify(x => x.Queue(It.Is<IUnit>(unit => unit.Meta.Id.Value == ID)));
-
-        private void AssertNewsIsSameAsTestXml(dynamic content)
-        {
-            Headline headline = content[0];            
-            headline.Value.Should().Be("This is a headline");
-
-            Summary summary = content[1];
-            summary.Value.Should().Be("This is a summary");
-
-            Story story = content[2];
-            story.Should().Be($"news/{ID}");
-        }
-
+        
         private static void RemoveBackgroundService(IServiceCollection services)
         {
             var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IHostedService));
