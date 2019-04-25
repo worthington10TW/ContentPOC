@@ -15,6 +15,9 @@ using Xunit;
 
 namespace ContentPOC.Integration
 {
+
+    // TODO: Re-think the verbs we use
+
     public class NewsIngestorEndpointTests : IDisposable
     {
         private readonly TestServer _testServer;
