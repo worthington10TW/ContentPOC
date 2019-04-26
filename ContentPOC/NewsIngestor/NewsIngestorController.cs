@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace ContentPOC
 {
-    [Route("api")]
+    [Route("api/news")]
     public class NewsIngestorController : Controller
     {
         private readonly NewsManager _manager;
@@ -17,7 +17,7 @@ namespace ContentPOC
         public NewsIngestorController(NewsManager manager) => _manager = manager;
 
         //TODO lock down to XML
-        [HttpPost("news")]
+        [HttpPost]
         public async Task<IActionResult> Post()
         {
             using (var reader = XmlReader.Create(Request.Body))

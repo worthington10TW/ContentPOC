@@ -1,13 +1,14 @@
 ﻿using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.Model;
-using ContentPOC.Unit;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
+using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -16,7 +17,6 @@ using Xunit;
 
 namespace ContentPOC.Integration
 {
-
     // TODO: Re-think the verbs we use
 
     public class NewsIngestorEndpointTests : IDisposable
@@ -52,13 +52,13 @@ namespace ContentPOC.Integration
         public async Task ShouldReturnNewsResponse_WhenPostingXml()
         {
             var content = await _response.Content.ReadAsStringAsync();
-            content.Should().Be(_responseJson);
+            AssertResponse(JArray.Parse(content));
 
         }
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
             _response.Headers.Location.ToString()
-            .Should().Be($"newsitem/{ID}");
+            .Should().Be($"news/{ID}");
 
         [Fact]
         public async Task ShouldReturnNotFound_WhenIdDoesNotExist()
@@ -75,7 +75,7 @@ namespace ContentPOC.Integration
 
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await getResponse.Content.ReadAsStringAsync();
-            content.Should().Be(_responseJson);
+            AssertResponse(JArray.Parse(content));
         }
 
         [Fact]
@@ -104,7 +104,17 @@ namespace ContentPOC.Integration
 <summary>This is a summary</summary>
 <story>Lorem ipsum</story>
 </news>";
+        
+        private static void AssertResponse(JArray value)
+        {
+            value.Count.Should().Be(3);
+            value[0].Value<string>("namespace").Should().Be("news/headline");
+            value[0].Value<string>("value").Should().Be("This is a headline");
+            value[1].Value<string>("namespace").Should().Be("news/story-summary");
+            value[1].Value<string>("value").Should().Be("This is a summary");
+            value[2].Value<string>("namespace").Should().Be("news/story-text");
+            value[2].Value<string>("value").Should().Be("Lorem ipsum");
+        }
 
-        private readonly string _responseJson = @"[{""unitType"":""headline"",""value"":""This is a headline"",""meta"":{}},{""unitType"":""news/story-summary"",""value"":""This is a summary"",""meta"":{}},{""unitType"":""news/story-text"",""value"":""Lorem ipsum"",""meta"":{}}]";
     }
 }
