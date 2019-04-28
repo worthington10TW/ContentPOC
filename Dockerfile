@@ -1,4 +1,3 @@
 FROM mcr.microsoft.com/dotnet/core/runtime:2.2
-WORKDIR /ContentPOC/out
-COPY . .
+COPY ContentPOC/out .
 CMD ["dotnet", "ContentPOC.dll"]
