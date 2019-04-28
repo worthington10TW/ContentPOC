@@ -30,7 +30,7 @@ jobs:
       - checkout
       - run:
           name: Setup Heroku
-          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh
+          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
       - run: heroku container:login
       - run: heroku container:release web -a worthington10tw-content-poc
 workflows:
