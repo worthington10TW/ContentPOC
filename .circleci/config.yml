@@ -1,0 +1,53 @@
+version: 2
+jobs:
+  build-and-test:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/runtime
+    steps:
+      - checkout
+      - run: dotnet build -c Release
+      - run: dotnet test ContentPOC.Integration
+      - run: dotnet test ContentPOC.Test
+  publish:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/runtime
+    steps:
+      - checkout
+      - run: dotnet publish -c Release -o out 
+  heroku-push:
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          key: dist-v1-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Setup Heroku
+          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
+      - run: heroku container:login
+      - run: heroku container:push web -a worthington10tw-content-poc
+  heroku-release:
+    context: hello
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Setup Heroku
+          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh
+      - run: heroku container:login
+      - run: heroku container:release web -a worthington10tw-content-poc
+workflows:
+  version: 2
+  build-test-and-deploy:
+    jobs:
+      - build-and-test
+      - publish:
+          requires:
+            - build-and-test
+      - heroku-push:
+          context: hello
+          requires:
+            - publish
+      - heroku-release:
+          context: hello
+          requires:
+            - heroku-push
