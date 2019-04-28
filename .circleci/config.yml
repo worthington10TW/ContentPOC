@@ -2,7 +2,7 @@ version: 2
 jobs:
   build-and-test:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/runtime
+      - image: mcr.microsoft.com/dotnet/core/sdk
     steps:
       - checkout
       - run: dotnet build -c Release
@@ -10,7 +10,7 @@ jobs:
       - run: dotnet test ContentPOC.Test
   publish:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/runtime
+      - image: mcr.microsoft.com/dotnet/core/sdk
     steps:
       - checkout
       - run: dotnet publish -c Release -o out 
@@ -18,8 +18,6 @@ jobs:
     machine: true
     steps:
       - checkout
-      - restore_cache:
-          key: dist-v1-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Setup Heroku
           command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
