@@ -22,11 +22,11 @@ jobs:
     machine: true
     steps:
       - checkout
-      - restore_cache:
-          key: out-v2-{{ .Branch }}-{{ .Revision }}    
+      # - restore_cache:
+      #     key: out-v2-{{ .Branch }}-{{ .Revision }}    
       - run:
           name: Setup Heroku
-          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
+          command: find . && chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
       - run: heroku container:login
       - run: heroku container:push web -a worthington10tw-content-poc
   heroku-release:
