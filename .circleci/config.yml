@@ -12,17 +12,18 @@ jobs:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk
     steps:
-      - checkout
-      - restore_cache:
-          key: out-v1-{{ .Branch }}-{{ .Revision }}
+      - checkout   
       - run: dotnet publish -c Release -o out 
-      - store_artifacts:
-          path: /ContentPOC/out
+      - save_cache:
+          key: out-v2-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - ContentPOC/out
   heroku-push:
     machine: true
     steps:
       - checkout
-    
+      - restore_cache:
+          key: out-v2-{{ .Branch }}-{{ .Revision }}    
       - run:
           name: Setup Heroku
           command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
