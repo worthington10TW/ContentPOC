@@ -16,18 +16,13 @@ jobs:
       - restore_cache:
           key: out-v1-{{ .Branch }}-{{ .Revision }}
       - run: dotnet publish -c Release -o out 
-      - save_cache:
-          key: out-v1-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - ContentPOC/out
       - store_artifacts:
           path: /ContentPOC/out
   heroku-push:
     machine: true
     steps:
       - checkout
-      - restore_cache:
-          key: out-v1-{{ .Branch }}-{{ .Revision }}
+    
       - run:
           name: Setup Heroku
           command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
