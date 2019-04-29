@@ -13,12 +13,12 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk
     steps:
       - checkout   
-      - run: dotnet publish -c Release -o out 
+      - run: dotnet publish -c Release -o ../out 
       - run: chmod -R 777 ContentPOC/out
       - save_cache:
           key: out-v2-{{ .Branch }}-{{ .Revision }}
           paths:
-            - ContentPOC/out
+            - out
   heroku-push:
     machine: true
     steps:
