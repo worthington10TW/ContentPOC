@@ -14,6 +14,7 @@ jobs:
     steps:
       - checkout   
       - run: dotnet publish -c Release -o out 
+      - run: chmod -R 777 ContentPOC/out
       - save_cache:
           key: out-v2-{{ .Branch }}-{{ .Revision }}
           paths:
@@ -22,8 +23,9 @@ jobs:
     machine: true
     steps:
       - checkout
-      # - restore_cache:
-      #     key: out-v2-{{ .Branch }}-{{ .Revision }}    
+      - run: find .
+      - restore_cache:
+          key: out-v2-{{ .Branch }}-{{ .Revision }}    
       - run:
           name: Setup Heroku
           command: find . && chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
