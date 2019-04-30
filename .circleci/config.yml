@@ -22,6 +22,7 @@ jobs:
     machine: true
     steps:
       - checkout
+      #TODO this causes permission issue
       - restore_cache:
           key: out-v1-{{ .Branch }}-{{ .Revision }}
       - run:
@@ -32,15 +33,10 @@ jobs:
   heroku-push:
     machine: true
     steps:
-      - checkout
-      - run: find .
-      - run: ls -l
-      - run: mkdir publish && chmod +x publish
-      - restore_cache:
-          key: out-v2-{{ .Branch }}-{{ .Revision }}    
+      - checkout  
       - run:
           name: Setup Heroku
-          command: find . && chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
+          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
       - run: heroku container:login
       - run: heroku container:push web -a worthington10tw-content-poc
   heroku-release:
