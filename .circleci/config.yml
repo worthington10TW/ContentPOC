@@ -13,17 +13,18 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk
     steps:
       - checkout   
-      - run: dotnet publish -c Release -o ../out 
-      - run: chmod -R 777 out
+      - run: dotnet publish -c Release -o ../publish 
       - save_cache:
           key: out-v2-{{ .Branch }}-{{ .Revision }}
           paths:
-            - out
+            - publish
   heroku-push:
     machine: true
     steps:
       - checkout
       - run: find .
+      - run: ls -l
+      - run: mkdir publish && chmod +x publish
       - restore_cache:
           key: out-v2-{{ .Branch }}-{{ .Revision }}    
       - run:
