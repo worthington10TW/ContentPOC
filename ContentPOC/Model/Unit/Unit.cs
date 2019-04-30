@@ -1,8 +1,10 @@
 ﻿using ContentPOC.Converter;
 using ContentPOC.Model;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace ContentPOC.Unit.Model
 {
@@ -16,16 +18,19 @@ namespace ContentPOC.Unit.Model
         public List<IUnit> Children { get; } = new List<IUnit>();
 
         public bool ShouldSerializeChildren() => Children.Any();
-
-        public override string ToString() => JsonConvert.SerializeObject(this);
     }
 
     public class Meta
     {
         public Meta(IUnit unit)
         {
-            Id = new Id(string.Format("{0:X}", ToString()?.GetStableHashCode()));
-            Area = new Area(unit?.Namespace.Split('.'));
+            Id = new Id(string.Format("{0:X}", JsonConvert.SerializeObject(
+                unit,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new IgnoreMetaSerializeContractResolver()
+                }).GetStableHashCode()));
+            Area = new Area(unit?.Namespace.Split('/'));
         }
 
         [JsonIgnore]
@@ -48,5 +53,18 @@ namespace ContentPOC.Unit.Model
         public Area(params string[] area) => Value = area;
 
         public string[] Value { get; }
+    }
+
+    public class IgnoreMetaSerializeContractResolver : DefaultContractResolver
+    {
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+        {
+            JsonProperty property = base.CreateProperty(member, memberSerialization);
+
+            if (property.DeclaringType == typeof(Unit) && property.PropertyName == "Meta")
+                property.ShouldSerialize = instance => false;
+
+            return property;
+        }
     }
 }

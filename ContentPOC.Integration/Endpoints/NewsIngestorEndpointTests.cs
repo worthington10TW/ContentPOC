@@ -1,11 +1,12 @@
-﻿using FluentAssertions;
-using Newtonsoft.Json.Linq;
+﻿using ContentPOC.HostedService;
+using FluentAssertions;
 using System;
-using System.Collections.Generic;
 using System.Net;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using System.Threading;
 
 namespace ContentPOC.Integration.Endpoints
 {
@@ -13,18 +14,31 @@ namespace ContentPOC.Integration.Endpoints
 
     public class NewsIngestorEndpointTests : IngestNewsItemTestSetup
     {
+        protected readonly HttpResponseMessage _xmlPostResponse;
+        public NewsIngestorEndpointTests()
+        {
+            var content = new StringContent(
+                    _testXml,
+                    System.Text.Encoding.UTF8,
+                    "application/xml");
+            _xmlPostResponse = HttpClient
+                .PostAsync("/api/news", content)
+                .GetAwaiter()
+                .GetResult();
+        }
+
         [Fact]
         public void ShouldReturn200Response_WhenPostingXml() =>
-            XmlPostResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+            _xmlPostResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
         [Fact]
         public async Task ShouldReturnNewsResponse_WhenPostingXml() => 
-            await XmlPostResponse.Content.ReadAsAsync<NewsDto>()
+            await _xmlPostResponse.Content.ReadAsAsync<NewsDto>()
             .ContinueWith(content => AssertResponse(content.Result));
         
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
-            XmlPostResponse.Headers.Location.ToString()
+            _xmlPostResponse.Headers.Location.ToString()
             .Should().Be($"news/{NEWS_ID}");
 
         [Fact]
@@ -42,14 +56,22 @@ namespace ContentPOC.Integration.Endpoints
             AssertResponse(content);
         }
 
+        [Fact]
+        public async Task ShouldPublishEventWhenNewsIsIngested()
+        {
+            var queue = Services.GetService<INotificationQueue>();
+            var rawNewsContentIngestedEvent = await queue.DequeueAsync(CancellationToken.None);
+            rawNewsContentIngestedEvent.Location.Should().Be($"news/{NEWS_ID}");
+        }
+
         private void AssertResponse(NewsDto content)
         {
-            content.meta.href.Should().Be("news/A357D733");
-            content.children[0].meta.href.Should().Be("news/headlines/A357D733");
+            content.meta.href.Should().Be("news/55F02F12");
+            content.children[0].meta.href.Should().Be("news/headlines/58EFB077");
             content.children[0].value.Should().Be("This is a headlines");
-            content.children[1].meta.href.Should().Be("news/story-summaries/A357D733");
+            content.children[1].meta.href.Should().Be("news/story-summaries/155A557C");
             content.children[1].value.Should().Be("This is a summary");
-            content.children[2].meta.href.Should().Be("news/story-text/A357D733");
+            content.children[2].meta.href.Should().Be("news/story-text/2151A298");
             content.children[2].value.Should().Be("Lorem ipsum");
         }
 
@@ -59,5 +81,12 @@ namespace ContentPOC.Integration.Endpoints
             public Meta meta { get; set; }
             public Child[] children { get; set; }
         }
+
+        private readonly string _testXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<news>
+<headline>This is a headlines</headline>
+<summary>This is a summary</summary>
+<story>Lorem ipsum</story>
+</news>";
     }
 }
