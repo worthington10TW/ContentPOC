@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,12 +18,10 @@ namespace ContentPOC.Integration.Endpoints
             XmlPostResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
         [Fact]
-        public async Task ShouldReturnNewsResponse_WhenPostingXml()
-        {
-            var content = await XmlPostResponse.Content.ReadAsStringAsync();
-            AssertResponse(JObject.Parse(content));
-
-        }
+        public async Task ShouldReturnNewsResponse_WhenPostingXml() => 
+            await XmlPostResponse.Content.ReadAsAsync<NewsDto>()
+            .ContinueWith(content => AssertResponse(content.Result));
+        
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
             XmlPostResponse.Headers.Location.ToString()
@@ -40,21 +38,26 @@ namespace ContentPOC.Integration.Endpoints
             var getResponse = await HttpClient.GetAsync($"/api/news/{NEWS_ID}");
 
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-            var content = await getResponse.Content.ReadAsStringAsync();
-            AssertResponse(JObject.Parse(content));
+            var content = await getResponse.Content.ReadAsAsync<NewsDto>();
+            AssertResponse(content);
         }
 
-        private static void AssertResponse(JObject result)
+        private void AssertResponse(NewsDto content)
         {
-            var value = result.Value<JToken>("children");
-            value.Count().Should().Be(3);
-            value[0].Value<string>("namespace").Should().Be("news/headlines");
-            value[0].Value<string>("value").Should().Be("This is a headlines");
-            value[1].Value<string>("namespace").Should().Be("news/story-summaries");
-            value[1].Value<string>("value").Should().Be("This is a summary");
-            value[2].Value<string>("namespace").Should().Be("news/story-text");
-            value[2].Value<string>("value").Should().Be("Lorem ipsum");
+            content.meta.href.Should().Be("news/A357D733");
+            content.children[0].meta.href.Should().Be("news/headlines/A357D733");
+            content.children[0].value.Should().Be("This is a headlines");
+            content.children[1].meta.href.Should().Be("news/story-summaries/A357D733");
+            content.children[1].value.Should().Be("This is a summary");
+            content.children[2].meta.href.Should().Be("news/story-text/A357D733");
+            content.children[2].value.Should().Be("Lorem ipsum");
         }
 
+        public class NewsDto
+        {
+            public string _namespace { get; set; }
+            public Meta meta { get; set; }
+            public Child[] children { get; set; }
+        }
     }
 }

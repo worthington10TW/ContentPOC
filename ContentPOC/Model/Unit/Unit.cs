@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using ContentPOC.Converter;
+﻿using ContentPOC.Converter;
 using ContentPOC.Model;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ContentPOC.Unit.Model
 {
@@ -9,9 +10,12 @@ namespace ContentPOC.Unit.Model
     {
         public Meta Meta => new Meta(this);
 
+        [JsonIgnore]
         public abstract string Namespace { get; }
 
         public List<IUnit> Children { get; } = new List<IUnit>();
+
+        public bool ShouldSerializeChildren() => Children.Any();
 
         public override string ToString() => JsonConvert.SerializeObject(this);
     }

@@ -58,5 +58,16 @@ namespace ContentPOC.Integration.Endpoints
 <summary>This is a summary</summary>
 <story>Lorem ipsum</story>
 </news>";
+        
+        public class Meta
+        {
+            public string href { get; set; }
+        }
+
+        public class Child
+        {
+            public string value { get; set; }
+            public Meta meta { get; set; }
+        }
     }
 }
