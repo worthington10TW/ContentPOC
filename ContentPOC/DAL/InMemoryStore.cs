@@ -12,9 +12,9 @@ namespace ContentPOC.DAL
 
         public void Reset() => _store.Clear();
 
-        public IUnit Get(Id id)
+        public IUnit Get(string area, Id id)
         {
-            _store.TryGetValue(id.Value, out var value);
+            _store.TryGetValue(GenerateId(area, id), out var value);
             return value;
         }
 
@@ -25,14 +25,16 @@ namespace ContentPOC.DAL
             var collection = unit as UnitCollection;
             if (collection != null)
                 collection.ForEach(u => Save(u));
-            
+
             // TODO: this really needs IUnit not to be a DTO.  (We need to map so we don't bleed down.)
-            return Task.FromResult(Save(unit)); 
+            return Task.FromResult(Save(unit));
         }
+
+        private static string GenerateId(string area, Id id) => $"{area}{id.Value}";
 
         private IUnit Save(IUnit unit) =>
             _store.AddOrUpdate(
-                unit.Meta.Id.Value,
+                GenerateId(unit.Namespace, unit.Meta.Id),
                 unit,
                 (key, existingUnit) => existingUnit = unit);
 

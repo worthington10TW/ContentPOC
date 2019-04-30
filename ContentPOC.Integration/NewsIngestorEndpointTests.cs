@@ -71,7 +71,7 @@ namespace ContentPOC.Integration
         }
 
         [Fact]
-        public async Task ShouldGetInsertedUnit()
+        public async Task ShouldGetInsertedNewsItem()
         {
             var getResponse = await _client.GetAsync($"/api/news/{ID}");
 
@@ -79,7 +79,19 @@ namespace ContentPOC.Integration
             var content = await getResponse.Content.ReadAsStringAsync();
             AssertResponse(JArray.Parse(content));
         }
-        
+
+        [Fact]
+        public async Task ShouldGetInsertedHeadline()
+        {
+            var getResponse = await _client.GetAsync($"/api/news/headlines/{ID}/");
+
+            getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var content = await getResponse.Content.ReadAsStringAsync();
+            var value = JObject.Parse(content);
+            value.Value<string>("namespace").Should().Be("news/headlines");
+            value.Value<string>("value").Should().Be("This is a headlines");
+        }
+
         [Fact]
         public async Task ShouldPublishEventWhenNewsIsIngested()
         {
@@ -108,7 +120,7 @@ namespace ContentPOC.Integration
 
         private readonly string _testXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
 <news>
-<headline>This is a headline</headline>
+<headline>This is a headlines</headline>
 <summary>This is a summary</summary>
 <story>Lorem ipsum</story>
 </news>";
@@ -116,9 +128,9 @@ namespace ContentPOC.Integration
         private static void AssertResponse(JArray value)
         {
             value.Count.Should().Be(3);
-            value[0].Value<string>("namespace").Should().Be("news/headline");
-            value[0].Value<string>("value").Should().Be("This is a headline");
-            value[1].Value<string>("namespace").Should().Be("news/story-summary");
+            value[0].Value<string>("namespace").Should().Be("news/headlines");
+            value[0].Value<string>("value").Should().Be("This is a headlines");
+            value[1].Value<string>("namespace").Should().Be("news/story-summaries");
             value[1].Value<string>("value").Should().Be("This is a summary");
             value[2].Value<string>("namespace").Should().Be("news/story-text");
             value[2].Value<string>("value").Should().Be("Lorem ipsum");

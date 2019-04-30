@@ -4,7 +4,7 @@
     {
         public StorySummary(string value) => Value = value;
 
-        public override string Namespace => "news/story-summary";
+        public override string Namespace => "news/story-summaries";
 
         public string Value { get; }
 

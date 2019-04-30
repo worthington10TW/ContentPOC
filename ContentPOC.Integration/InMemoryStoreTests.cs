@@ -24,7 +24,7 @@ namespace ContentPOC.Integration
 
         [Fact]
         public void WhenNoResult_ShouldReturnNull() =>
-            _store.Get(new Id(Guid.NewGuid().ToString()))
+            _store.Get("super-area", new Id(Guid.NewGuid().ToString()))
                 .Should()
                 .BeNull();
 
@@ -39,7 +39,7 @@ namespace ContentPOC.Integration
             };
             await _store.SaveAsync(unit);
 
-            _store.Get(id).Should().BeEquivalentTo(unit);
+            _store.Get(unit.Namespace, id).Should().BeEquivalentTo(unit);
         }
 
         [Fact]
@@ -52,10 +52,10 @@ namespace ContentPOC.Integration
                 Value = "i-live/here"
             };
             await _store.SaveAsync(unit);
-            _store.Get(id).Should().BeEquivalentTo(unit);
+            _store.Get(unit.Namespace, id).Should().BeEquivalentTo(unit);
             _store.Reset();
 
-            _store.Get(id).Should().BeNull();
+            _store.Get(unit.Namespace, id).Should().BeNull();
         }
 
         [Fact]
@@ -74,7 +74,21 @@ namespace ContentPOC.Integration
 
             await _store.SaveAsync(toReplace);
 
-            _store.Get(new Id("amazingUnit")).Should().BeEquivalentTo(toReplace);
+            _store.Get(toReplace.Namespace, new Id("amazingUnit")).Should().BeEquivalentTo(toReplace);
+        }
+
+        [Fact]
+        public async Task WhenCallingWithNonMatchingArea_ShouldNotReturn()
+        {
+            var id = new Id("amazingUnit");
+            var unit = new TestUnit
+            {
+                Meta = new TestMeta(id, new TestUnit()),
+                Value = "i-live/here"
+            };
+            await _store.SaveAsync(unit);
+
+            _store.Get(Guid.NewGuid().ToString(), id).Should().BeNull();
         }
 
         public void Dispose()

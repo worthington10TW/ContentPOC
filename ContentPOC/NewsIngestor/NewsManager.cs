@@ -3,7 +3,6 @@ using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.Model;
 using ContentPOC.Model.News;
-using ContentPOC.Unit;
 using ContentPOC.Unit.Model;
 using ContentPOC.Unit.Model.News;
 using System.Threading.Tasks;
@@ -40,6 +39,7 @@ namespace ContentPOC.NewsIngestor
                 TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
-        public IUnit Get(Id id) => _repository.Get(id);
+        //TODO this was rushed dev, the idea of the location/areas/namespace has leaked everywhere! should update
+        public IUnit Get(string[] areas, Id id) => _repository.Get(string.Join("/", areas), id);
     }
 }

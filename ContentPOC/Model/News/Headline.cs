@@ -6,7 +6,7 @@
         public Headline(string value) => Value = value;
         
         //TODO Unit types need namespace consideration
-        public override string Namespace => "news/headline";
+        public override string Namespace => "news/headlines";
         
         public string Value { get; private set; }
 
