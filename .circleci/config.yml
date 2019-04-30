@@ -29,7 +29,20 @@ jobs:
           name: Setup Heroku
           command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
       - run: heroku container:login
-      - run: heroku container:push web -f FromPublish.dockerfile -a worthington10tw-content-poc           
+      - run: heroku container:push web -f FromPublish.dockerfile -a worthington10tw-content-poc   
+  docker-tag-push:
+      machine: true
+      steps:
+      - checkout
+      - run:
+          name: Docker login
+          command: docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com
+      - run :
+          name: Docker tag
+          command: docker tag worthington10tw-content-poc:{{ .Revision }} registry.heroku.com/worthington10tw-content-poc/web
+      - run :
+          name: Docker push
+          command: docker push registry.heroku.com/worthington10tw-content-poc/web
   heroku-push:
     machine: true
     steps:
@@ -50,7 +63,7 @@ jobs:
           command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
       - run: 
           name: Release Heroku
-          command: heroku container:login && heroku stack:set container && heroku container:release web
+          command: heroku container:login && heroku container:release web --app worthington10tw-content-poc
 workflows:
   version: 2
   build-test-and-deploy:
@@ -65,11 +78,15 @@ workflows:
       #     context: hello
       #     requires:
       #       - publish  
-      - heroku-push:
+      # - heroku-push:
+      #     context: hello
+      #     requires:
+      #       - publish
+      - docker-tag-push:
           context: hello
           requires:
             - publish
       - heroku-release:
           context: hello
           requires:
-            - heroku-push
+            - docker-tag-push
