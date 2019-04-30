@@ -37,8 +37,9 @@ jobs:
       - run:
           name: Setup Heroku
           command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
-      - run: heroku container:login
-      - run: heroku container:push web -a worthington10tw-content-poc
+      - run:
+          name: Push Heroku
+          command: heroku container:login && heroku stack:set container && heroku container:push web -a worthington10tw-content-poc
   heroku-release:
     context: hello
     machine: true
@@ -47,8 +48,9 @@ jobs:
       - run:
           name: Setup Heroku
           command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
-      - run: heroku container:login
-      - run: heroku container:release web -a worthington10tw-content-poc
+      - run: 
+          name: Release Heroku
+          command: heroku container:login && heroku stack:set container && heroku container:release web -a worthington10tw-content-poc
 workflows:
   version: 2
   build-test-and-deploy:
