@@ -1,6 +1,7 @@
 ﻿using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.Model;
+using ContentPOC.Model.News;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,9 +83,9 @@ namespace ContentPOC.Integration
         [Fact]
         public async Task ShouldPublishEventWhenNewsIsIngested()
         {
-            var queue = _testServer.Host.Services.GetService<IUnitNotificationQueue>();
-            var item = await queue.DequeueAsync(CancellationToken.None);
-            item.Meta.Id.Value.Should().Be(ID);
+            var queue = _testServer.Host.Services.GetService<INotificationQueue>();
+            RawNewsContentIngested rawNewsContentIngestedEvent = await queue.DequeueAsync(CancellationToken.None);
+            rawNewsContentIngestedEvent.Location.Should().Be($"news/{ID}");
         }
 
 

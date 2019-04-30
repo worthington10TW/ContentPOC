@@ -2,6 +2,7 @@
 using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.Model;
+using ContentPOC.Model.News;
 using ContentPOC.Unit;
 using ContentPOC.Unit.Model;
 using ContentPOC.Unit.Model.News;
@@ -13,12 +14,12 @@ namespace ContentPOC.NewsIngestor
     {
         private readonly IConverter<NewsItem> _converter;
         private readonly IRepository _repository;
-        private readonly IUnitNotificationQueue _queue;
+        private readonly INotificationQueue _queue;
 
         public NewsManager(
             IConverter<NewsItem> converter,
             IRepository repository,
-            IUnitNotificationQueue queue)
+            INotificationQueue queue)
         {
             _converter = converter;
             _repository = repository;
@@ -32,7 +33,8 @@ namespace ContentPOC.NewsIngestor
                 .SaveAsync(result)
                 .ContinueWith(r =>
                 {
-                    _queue.Queue(r.Result);
+                    // TODO: Change this to drive out the domain.
+                    _queue.Queue(new RawNewsContentIngested { Location = r.Result.Meta.Href });
                     return r.Result;
                 },
                 TaskContinuationOptions.OnlyOnRanToCompletion);

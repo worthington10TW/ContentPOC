@@ -48,11 +48,11 @@ namespace ContentPOC.Integration
         [Fact]
         public void ShouldSetupGlobalIUnitNotificationQueue()
         {
-            var repository = _provider.GetService<IUnitNotificationQueue>();
+            var repository = _provider.GetService<INotificationQueue>();
             repository.Should().NotBeNull();
             repository.Should().BeOfType<RawNewsIngestedContentQueue>();
 
-            var sameInstance = _provider.GetService<IUnitNotificationQueue>();
+            var sameInstance = _provider.GetService<INotificationQueue>();
 
             sameInstance.Should().Be(repository);
         }

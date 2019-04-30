@@ -1,5 +1,6 @@
 ﻿using ContentPOC.HostedService;
 using ContentPOC.Model;
+using ContentPOC.Model.News;
 using ContentPOC.Unit;
 using ContentPOC.Unit.Model;
 using FluentAssertions;
@@ -17,19 +18,19 @@ namespace ContentPOC.Test
         [Fact]
         public async Task ShouldPopFromQueueInCorrectOrder()
         {
-            var unit1 = new TestUnit { Id = new Id("1"), Href = "First" };
-            _queue.Queue(unit1);
-            var unit2 = new TestUnit { Id = new Id("2"), Href = "Second" };
-            _queue.Queue(unit2);
-            var unit3 = new TestUnit { Id = new Id("3"), Href = "Third" };
-            _queue.Queue(unit3);
+            var event1 = new RawNewsContentIngested { Location = "First" };
+            _queue.Queue(event1);
+            var event2 = new RawNewsContentIngested { Location = "Second" };
+            _queue.Queue(event2);
+            var event3 = new RawNewsContentIngested { Location = "Third" };
+            _queue.Queue(event3);
 
             var pop1 = await _queue.DequeueAsync(CancellationToken.None);
-            pop1.Should().Be(unit1);
+            pop1.Should().Be(event1);
             var pop2 = await _queue.DequeueAsync(CancellationToken.None);
-            pop2.Should().Be(unit2);
+            pop2.Should().Be(event2);
             var pop3 = await _queue.DequeueAsync(CancellationToken.None);
-            pop3.Should().Be(unit3);
+            pop3.Should().Be(event3);
         }
 
         [Fact]

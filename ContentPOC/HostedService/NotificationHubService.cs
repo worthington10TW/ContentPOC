@@ -7,10 +7,10 @@ namespace ContentPOC.HostedService
 {
     public class NotificationHubService : BackgroundService
     {
-        private readonly IUnitNotificationQueue _taskQueue;
+        private readonly INotificationQueue _taskQueue;
         private readonly INotificationHub _hub;
 
-        public NotificationHubService(IUnitNotificationQueue taskQueue, INotificationHub hub)
+        public NotificationHubService(INotificationQueue taskQueue, INotificationHub hub)
         {
             _taskQueue = taskQueue;
             _hub = hub;
@@ -22,16 +22,16 @@ namespace ContentPOC.HostedService
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                var unit = await _taskQueue.DequeueAsync(cancellationToken);
+                var @event = await _taskQueue.DequeueAsync(cancellationToken);
 
                 try
                 {
-                    _hub.Alert(unit);
+                    _hub.Alert(@event);
                 }
                 catch (Exception ex)
                 {
                     Console.Error.WriteLine(ex.ToString() +
-                       $"Error occurred executing {nameof(unit)}.");
+                       $"Error occurred executing {nameof(@event)}.");
                 }
             }
 

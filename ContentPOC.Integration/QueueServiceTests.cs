@@ -1,5 +1,5 @@
 ﻿using ContentPOC.HostedService;
-using ContentPOC.Unit.Model.News;
+using ContentPOC.Model.News;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -24,13 +24,13 @@ namespace ContentPOC.Integration
         }
 
         [Fact]
-        public void ShouldNotify_WhenUnitIsAddedToQueue()
+        public void ShouldNotify_WhenEventIsAddedToQueue()
         {
-            var queue = _testServer.Host.Services.GetService<IUnitNotificationQueue>();
-            var unit = new NewsItem { new Headline("BEST HEADLINE EVER") };
-            queue.Queue(unit);
+            var queue = _testServer.Host.Services.GetService<INotificationQueue>();
+            var @event = new RawNewsContentIngested { Location = "BEST LOCATION EVER" };
+            queue.Queue(@event);
 
-            _mockHub.Verify(x => x.Alert(unit));
+            _mockHub.Verify(x => x.Alert(@event));
         }
 
         public void Dispose() => _testServer.Dispose();

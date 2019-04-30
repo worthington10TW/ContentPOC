@@ -1,4 +1,5 @@
 ﻿using ContentPOC.Model;
+using ContentPOC.Model.News;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -7,7 +8,7 @@ namespace ContentPOC.HostedService
 {
     public interface INotificationHub
     {
-        void Alert(IUnit unit);
+        void Alert(RawNewsContentIngested unit);
     }
 
     public class SimulationNotificationHub : INotificationHub
@@ -16,14 +17,14 @@ namespace ContentPOC.HostedService
 
         public SimulationNotificationHub(ILogger<SimulationNotificationHub> logger) => _logger = logger;
 
-        public void Alert(IUnit unit)
+        public void Alert(RawNewsContentIngested @event)
         {
             //simulate notification, sleep 5 seconds
             Thread.Sleep(new TimeSpan(0, 0, 5));
-            _logger.LogInformation("****UNIT HAS BEEN UPDATED****");
-            _logger.LogInformation($"****{unit.Meta.Id}****");
+            _logger.LogInformation("****EVENT HAS BEEN UPDATED****");
+            _logger.LogInformation($"****{@event.Location}****");
             _logger.LogInformation("********************************");
-            _logger.LogInformation(unit.ToString());
+            _logger.LogInformation(@event.ToString());
             _logger.LogInformation("********************************");
         }
     }

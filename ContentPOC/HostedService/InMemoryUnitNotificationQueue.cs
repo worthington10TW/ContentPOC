@@ -1,4 +1,5 @@
 ﻿using ContentPOC.Model;
+using ContentPOC.Model.News;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
@@ -6,33 +7,33 @@ using System.Threading.Tasks;
 
 namespace ContentPOC.HostedService
 {
-    public interface IUnitNotificationQueue
+    public interface INotificationQueue
     {
-        void Queue(IUnit unit);
+        void Queue(RawNewsContentIngested @event);
 
-        Task<IUnit> DequeueAsync(CancellationToken cancellationToken);
+        Task<RawNewsContentIngested> DequeueAsync(CancellationToken cancellationToken);
     }
 
-    public class RawNewsIngestedContentQueue : IUnitNotificationQueue
+    public class RawNewsIngestedContentQueue : INotificationQueue
     {
-        private readonly ConcurrentQueue<IUnit> _units = new ConcurrentQueue<IUnit>();
+        private readonly ConcurrentQueue<RawNewsContentIngested> _events = new ConcurrentQueue<RawNewsContentIngested>();
         private SemaphoreSlim _signal = new SemaphoreSlim(0);
 
-        public void Queue(IUnit unit)
+        public void Queue(RawNewsContentIngested @event)
         {
-            if (unit == null)
-                throw new ArgumentNullException(nameof(unit));
+            if (@event == null)
+                throw new ArgumentNullException(nameof(@event));
 
-            _units.Enqueue(unit);
+            _events.Enqueue(@event);
             _signal.Release();
         }
 
-        public async Task<IUnit> DequeueAsync(CancellationToken cancellationToken)
+        public async Task<RawNewsContentIngested> DequeueAsync(CancellationToken cancellationToken)
         {
             await _signal.WaitAsync(cancellationToken);
-            _units.TryDequeue(out var unit);
+            _events.TryDequeue(out var @event);
 
-            return unit;
+            return @event;
         }
     }
 
