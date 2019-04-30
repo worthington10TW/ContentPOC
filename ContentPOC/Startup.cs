@@ -31,7 +31,7 @@ namespace ContentPOC
                 .AddSingleton<IRepository, InMemoryStore>()
                 .AddTransient<NewsManager>()
                 .AddSingleton<NewsConverter>()
-                .AddSingleton<INotificationQueue, RawNewsIngestedContentQueue>();
+                .AddSingleton<INotificationQueue, RawNewsContentIngestedQueue>();
 
             services
                 .AddTransient<IHostedService, NotificationHubService>()

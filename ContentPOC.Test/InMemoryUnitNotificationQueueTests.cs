@@ -13,7 +13,7 @@ namespace ContentPOC.Test
 {
     public class InMemoryUnitNotificationQueueTests
     {
-        private readonly RawNewsIngestedContentQueue _queue = new RawNewsIngestedContentQueue();
+        private readonly RawNewsContentIngestedQueue _queue = new RawNewsContentIngestedQueue();
 
         [Fact]
         public async Task ShouldPopFromQueueInCorrectOrder()
@@ -38,17 +38,6 @@ namespace ContentPOC.Test
         {
             Action action = () => _queue.Queue(null);
             action.Should().Throw<ArgumentNullException>();
-        }
-
-        public class TestUnit : IUnit
-        {
-            public string Href { get; set; }
-
-            public Id Id { get; set; }
-
-            public string Namespace => nameof(TestUnit);
-
-            public Meta Meta => new Meta(this);
         }
     }
 }

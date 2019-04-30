@@ -14,7 +14,7 @@ namespace ContentPOC.HostedService
         Task<RawNewsContentIngested> DequeueAsync(CancellationToken cancellationToken);
     }
 
-    public class RawNewsIngestedContentQueue : INotificationQueue
+    public class RawNewsContentIngestedQueue : INotificationQueue
     {
         private readonly ConcurrentQueue<RawNewsContentIngested> _events = new ConcurrentQueue<RawNewsContentIngested>();
         private SemaphoreSlim _signal = new SemaphoreSlim(0);
