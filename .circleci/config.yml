@@ -18,6 +18,17 @@ jobs:
           key: out-v2-{{ .Branch }}-{{ .Revision }}
           paths:
             - publish
+  heroku-push-from-publish:
+    machine: true
+    steps:
+      - checkout
+      - restore_cache:
+          key: out-v1-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Setup Heroku
+          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
+      - run: heroku container:login
+      - run: heroku container:push web -f FromPublish.dockerfile -a worthington10tw-content-poc           
   heroku-push:
     machine: true
     steps:
@@ -50,6 +61,12 @@ workflows:
       - publish:
           requires:
             - build-and-test
+      # cache permission issue causing cache fetch to fail
+      # publishing in docker build as a temp fix
+      # - heroku-push-from-publish:
+      #     context: hello
+      #     requires:
+      #       - publish  
       - heroku-push:
           context: hello
           requires:
