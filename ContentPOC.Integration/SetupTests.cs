@@ -50,7 +50,7 @@ namespace ContentPOC.Integration
         {
             var repository = _provider.GetService<IUnitNotificationQueue>();
             repository.Should().NotBeNull();
-            repository.Should().BeOfType<InMemoryUnitNotificationQueue>();
+            repository.Should().BeOfType<RawNewsIngestedContentQueue>();
 
             var sameInstance = _provider.GetService<IUnitNotificationQueue>();
 

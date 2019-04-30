@@ -13,7 +13,7 @@ namespace ContentPOC.HostedService
         Task<IUnit> DequeueAsync(CancellationToken cancellationToken);
     }
 
-    public class InMemoryUnitNotificationQueue : IUnitNotificationQueue
+    public class RawNewsIngestedContentQueue : IUnitNotificationQueue
     {
         private readonly ConcurrentQueue<IUnit> _units = new ConcurrentQueue<IUnit>();
         private SemaphoreSlim _signal = new SemaphoreSlim(0);

@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -24,14 +25,14 @@ namespace ContentPOC.Integration
         private readonly TestServer _testServer;
         private readonly HttpClient _client;
         private readonly HttpResponseMessage _response;
-        private readonly Mock<IUnitNotificationQueue> _mockHub = new Mock<IUnitNotificationQueue>();
+        private readonly Mock<INotificationHub> _mockNotificationHub = new Mock<INotificationHub>();
         private const string ID = "A357D733";
 
         public NewsIngestorEndpointTests()
         {
             var builder = Program.WebHostBuilder();
             builder.ConfigureTestServices(services => RemoveBackgroundService(services));
-            builder.ConfigureTestServices(x => x.AddSingleton(_mockHub.Object));
+            builder.ConfigureTestServices(x => x.AddSingleton(_mockNotificationHub.Object));
             _testServer = new TestServer(builder);
             _client = _testServer.CreateClient();
             var content = new StringContent(
@@ -77,10 +78,16 @@ namespace ContentPOC.Integration
             var content = await getResponse.Content.ReadAsStringAsync();
             AssertResponse(JArray.Parse(content));
         }
-
+        
         [Fact]
-        public void ShouldNotifyWhenSuccessfullyPosted() =>
-             _mockHub.Verify(x => x.Queue(It.Is<IUnit>(unit => unit.Meta.Id.Value == ID)));
+        public async Task ShouldPublishEventWhenNewsIsIngested()
+        {
+            var queue = _testServer.Host.Services.GetService<IUnitNotificationQueue>();
+            var item = await queue.DequeueAsync(CancellationToken.None);
+            item.Meta.Id.Value.Should().Be(ID);
+        }
+
+
         
         private static void RemoveBackgroundService(IServiceCollection services)
         {

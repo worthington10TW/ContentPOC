@@ -12,7 +12,7 @@ namespace ContentPOC.Test
 {
     public class InMemoryUnitNotificationQueueTests
     {
-        private readonly InMemoryUnitNotificationQueue _queue = new InMemoryUnitNotificationQueue();
+        private readonly RawNewsIngestedContentQueue _queue = new RawNewsIngestedContentQueue();
 
         [Fact]
         public async Task ShouldPopFromQueueInCorrectOrder()
