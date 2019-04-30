@@ -13,7 +13,7 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk
     steps:
       - checkout   
-      - run: dotnet publish -c Release -o ../publish 
+      - run: dotnet publish -c Release -o ../publish  && chmod +x publish
       - save_cache:
           key: out-v2-{{ .Branch }}-{{ .Revision }}
           paths:
