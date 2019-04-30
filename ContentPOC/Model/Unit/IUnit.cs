@@ -1,5 +1,5 @@
-﻿using ContentPOC.Unit;
-using ContentPOC.Unit.Model;
+﻿using ContentPOC.Unit.Model;
+using System.Collections.Generic;
 
 namespace ContentPOC.Model
 {
@@ -8,5 +8,7 @@ namespace ContentPOC.Model
         Meta Meta { get; }
         
         string Namespace { get; }
+
+        List<IUnit> Children { get; }
     }
 }

@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -105,6 +106,8 @@ namespace ContentPOC.Integration
             public Meta Meta { get; set; }
 
             public string Value { get; set; }
+
+            public List<IUnit> Children { get; } = new List<IUnit>();
         }
 
         public class TestMeta : Meta

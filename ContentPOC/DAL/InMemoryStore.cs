@@ -20,11 +20,8 @@ namespace ContentPOC.DAL
 
         public Task<IUnit> SaveAsync(IUnit unit)
         {
-            //TODO This sucks, should be done better.....
             // TODO: run in parallel
-            var collection = unit as UnitCollection;
-            if (collection != null)
-                collection.ForEach(u => Save(u));
+            unit.Children.ForEach(u => Save(u));
 
             // TODO: this really needs IUnit not to be a DTO.  (We need to map so we don't bleed down.)
             return Task.FromResult(Save(unit));

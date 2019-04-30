@@ -1,4 +1,5 @@
-﻿using ContentPOC.Converter;
+﻿using System.Collections.Generic;
+using ContentPOC.Converter;
 using ContentPOC.Model;
 using Newtonsoft.Json;
 
@@ -10,6 +11,8 @@ namespace ContentPOC.Unit.Model
 
         public abstract string Namespace { get; }
 
+        public List<IUnit> Children { get; } = new List<IUnit>();
+
         public override string ToString() => JsonConvert.SerializeObject(this);
     }
 
@@ -18,20 +21,28 @@ namespace ContentPOC.Unit.Model
         public Meta(IUnit unit)
         {
             Id = new Id(string.Format("{0:X}", ToString()?.GetStableHashCode()));
-            Href = $"{unit?.Namespace}/{Id?.Value}";
+            Area = new Area(unit?.Namespace.Split('.'));
         }
 
         [JsonIgnore]
         public virtual Id Id { get; }
 
         [JsonIgnore]
-        public virtual string Href { get; }
+        public virtual Area Area { get; }
 
+        public string Href => $"{string.Join("/", Area?.Value)}/{Id.Value}";
     }
 
     public class Id
     {
         public Id(string id) => Value = id;
-        public string Value { get; set; }
+        public string Value { get; }
+    }
+
+    public class Area
+    {
+        public Area(params string[] area) => Value = area;
+
+        public string[] Value { get; }
     }
 }

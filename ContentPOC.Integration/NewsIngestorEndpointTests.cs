@@ -54,7 +54,7 @@ namespace ContentPOC.Integration
         public async Task ShouldReturnNewsResponse_WhenPostingXml()
         {
             var content = await _response.Content.ReadAsStringAsync();
-            AssertResponse(JArray.Parse(content));
+            AssertResponse(JObject.Parse(content));
 
         }
         [Fact]
@@ -77,7 +77,7 @@ namespace ContentPOC.Integration
 
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await getResponse.Content.ReadAsStringAsync();
-            AssertResponse(JArray.Parse(content));
+            AssertResponse(JObject.Parse(content));
         }
 
         [Fact]
@@ -125,9 +125,10 @@ namespace ContentPOC.Integration
 <story>Lorem ipsum</story>
 </news>";
         
-        private static void AssertResponse(JArray value)
+        private static void AssertResponse(JObject result)
         {
-            value.Count.Should().Be(3);
+            var value = result.Value<JToken>("children");
+            value.Count().Should().Be(3);
             value[0].Value<string>("namespace").Should().Be("news/headlines");
             value[0].Value<string>("value").Should().Be("This is a headlines");
             value[1].Value<string>("namespace").Should().Be("news/story-summaries");

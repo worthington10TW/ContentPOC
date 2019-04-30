@@ -9,11 +9,11 @@ namespace ContentPOC.Converter
         public async Task<IUnit> CreateAsync(NewsRequestXml xml)
         {
             return new NewsItem
-            {
+            (
                 new Headline(xml.Headline),
                 new StorySummary(xml.Summary),
                 new StoryText(xml.Story)
-            };
+            );
         }
     }
 }
