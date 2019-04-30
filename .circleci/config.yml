@@ -35,11 +35,14 @@ jobs:
       steps:
       - checkout
       - run:
+          name: Docker build
+          command: docker build -t worthington10tw-content-poc .
+      - run:
           name: Docker login
           command: docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com
       - run :
           name: Docker tag
-          command: docker tag worthington10tw-content-poc:{{ .Revision }} registry.heroku.com/worthington10tw-content-poc/web
+          command: docker tag worthington10tw-content-poc registry.heroku.com/worthington10tw-content-poc/web
       - run :
           name: Docker push
           command: docker push registry.heroku.com/worthington10tw-content-poc/web
