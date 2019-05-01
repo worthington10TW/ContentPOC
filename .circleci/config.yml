@@ -12,61 +12,36 @@ jobs:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk
     steps:
-      - checkout   
+      - checkout
+      - restore_cache:
+          key: out-v2-{{ .Branch }}-{{ .Revision }}
       - run: dotnet publish -c Release -o ../publish  && chmod +x publish
       - save_cache:
           key: out-v2-{{ .Branch }}-{{ .Revision }}
           paths:
-            - publish
-  heroku-push-from-publish:
-    machine: true
-    steps:
-      - checkout
-      #TODO this causes permission issue
-      - restore_cache:
-          key: out-v1-{{ .Branch }}-{{ .Revision }}
-      - run:
-          name: Setup Heroku
-          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
-      - run: heroku container:login
-      - run: heroku stack:set container && heroku container:push web -f FromPublish.dockerfile -a worthington10tw-content-poc   
-  docker:
-      machine: true
-      steps:
-      - checkout
-      - run:
-          name: Docker build
-          command: docker build -t worthington10tw-content-poc .
-      - run:
-          name: Docker login
-          command: docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com
-      - run :
-          name: Docker tag
-          command: docker tag worthington10tw-content-poc registry.heroku.com/worthington10tw-content-poc/web
-      - run :
-          name: Docker push
-          command: docker push registry.heroku.com/worthington10tw-content-poc/web
+            - publish  
   heroku-push:
     machine: true
     steps:
-      - checkout  
+      - checkout
+      - restore_cache:
+          key: out-v2-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Setup Heroku
-          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
+          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content
       - run:
           name: Push Heroku
-          command: heroku container:login && heroku stack:set container && heroku container:push web -a worthington10tw-content-poc
+          command: heroku container:login && heroku container:push web worker -a worthington10tw-content
   heroku-release:
-    context: hello
     machine: true
     steps:
       - checkout
       - run:
           name: Setup Heroku
-          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content-poc
+          command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content
       - run: 
           name: Release Heroku
-          command: heroku container:login && heroku container:release web --app worthington10tw-content-poc
+          command: heroku container:login && heroku container:release web --app worthington10tw-content
 workflows:
   version: 2
   build-test-and-deploy:
@@ -75,21 +50,11 @@ workflows:
       - publish:
           requires:
             - build-and-test
-      # cache permission issue causing cache fetch to fail
-      # publishing in docker build as a temp fix
-      # - heroku-push-from-publish:
-      #     context: hello
-      #     requires:
-      #       - publish  
-      # - heroku-push:
-      #     context: hello
-      #     requires:
-      #       - publish
-      - docker:
+      - heroku-push:
           context: hello
           requires:
             - publish
       - heroku-release:
           context: hello
           requires:
-            - docker
+            - heroku-push
