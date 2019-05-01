@@ -10,7 +10,7 @@ namespace ContentPOC.Unit.Model
 {
     public abstract class Unit : IUnit
     {
-        public Meta Meta => new Meta(this);
+        public IMeta Meta => new Meta(this);
 
         [JsonIgnore]
         public abstract string Namespace { get; }
@@ -20,7 +20,7 @@ namespace ContentPOC.Unit.Model
         public bool ShouldSerializeChildren() => Children.Any();
     }
 
-    public class Meta
+    public class Meta : IMeta
     {
         public Meta(IUnit unit)
         {
@@ -40,6 +40,13 @@ namespace ContentPOC.Unit.Model
         public virtual Area Area { get; }
 
         public string Href => $"{string.Join("/", Area?.Value)}/{Id.Value}";
+    }
+
+    public interface IMeta
+    {
+        Id Id { get; }
+        Area Area { get; }
+        string Href { get; }
     }
 
     public class Id

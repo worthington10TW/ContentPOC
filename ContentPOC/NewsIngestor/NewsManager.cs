@@ -5,6 +5,8 @@ using ContentPOC.Model;
 using ContentPOC.Model.News;
 using ContentPOC.Unit.Model;
 using ContentPOC.Unit.Model.News;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ContentPOC.NewsIngestor
@@ -38,8 +40,10 @@ namespace ContentPOC.NewsIngestor
                 },
                 TaskContinuationOptions.OnlyOnRanToCompletion);
         }
-
+        
         //TODO this was rushed dev, the idea of the location/areas/namespace has leaked everywhere! should update
         public IUnit Get(string[] areas, Id id) => _repository.Get(string.Join("/", areas), id);
+
+        public List<IUnit> GetAll(params string[] areas) => _repository.GetAll(string.Join("/", areas));
     }
 }

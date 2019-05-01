@@ -7,15 +7,16 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using System.Threading;
+using static ContentPOC.Integration.Endpoints.Dto;
 
 namespace ContentPOC.Integration.Endpoints
 {
     // TODO: Re-think the verbs we use
 
-    public class NewsIngestorEndpointTests : IngestNewsItemTestSetup
+    public class XmlNewsIngestorEndpointTests : IngestNewsItemTestSetup
     {
         protected readonly HttpResponseMessage _xmlPostResponse;
-        public NewsIngestorEndpointTests()
+        public XmlNewsIngestorEndpointTests()
         {
             var content = new StringContent(
                     _testXml,
@@ -73,13 +74,6 @@ namespace ContentPOC.Integration.Endpoints
             content.children[1].value.Should().Be("This is a summary");
             content.children[2].meta.href.Should().Be("news/story-text/2151A298");
             content.children[2].value.Should().Be("Lorem ipsum");
-        }
-
-        public class NewsDto
-        {
-            public string _namespace { get; set; }
-            public Meta meta { get; set; }
-            public Child[] children { get; set; }
         }
 
         private readonly string _testXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>

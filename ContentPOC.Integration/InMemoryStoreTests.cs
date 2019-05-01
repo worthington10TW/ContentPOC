@@ -1,12 +1,13 @@
-﻿using ContentPOC.DAL;
+﻿using AutoFixture;
+using ContentPOC.DAL;
 using ContentPOC.Model;
-using ContentPOC.Unit;
 using ContentPOC.Unit.Model;
 using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -16,6 +17,7 @@ namespace ContentPOC.Integration
     {
         private readonly TestServer _testServer;
         private readonly InMemoryStore _store;
+        private readonly Fixture _fixture = new Fixture();
 
         public InMemoryStoreTests()
         {
@@ -35,7 +37,7 @@ namespace ContentPOC.Integration
             var id = new Id("amazingUnit");
             var unit = new TestUnit
             {
-                Meta = new TestMeta(id, new TestUnit()),
+                Meta = new TestMeta(id),
                 Value = "i-live/here"
             };
             await _store.SaveAsync(unit);
@@ -49,7 +51,7 @@ namespace ContentPOC.Integration
             var id = new Id("amazingUnit");
             var unit = new TestUnit
             {
-                Meta = new TestMeta(id, new TestUnit()),
+                Meta = new TestMeta(id),
                 Value = "i-live/here"
             };
             await _store.SaveAsync(unit);
@@ -64,12 +66,12 @@ namespace ContentPOC.Integration
         {
             await _store.SaveAsync(new TestUnit
             {
-                Meta = new TestMeta(new Id("amazingUnit"), new TestUnit()),
+                Meta = new TestMeta(new Id("amazingUnit")),
                 Value = "i-live/here"
             });
             var toReplace = new TestUnit
             {
-                Meta = new TestMeta(new Id("amazingUnit"), new TestUnit()),
+                Meta = new TestMeta(new Id("amazingUnit")),
                 Value = "i-dont-look/the-same"
             };
 
@@ -84,12 +86,35 @@ namespace ContentPOC.Integration
             var id = new Id("amazingUnit");
             var unit = new TestUnit
             {
-                Meta = new TestMeta(id, new TestUnit()),
+                Meta = new TestMeta(id),
                 Value = "i-live/here"
             };
             await _store.SaveAsync(unit);
 
             _store.Get(Guid.NewGuid().ToString(), id).Should().BeNull();
+        }
+
+        [Fact]
+        public async Task WhenCallingGetllAll_ShouldGetAllUnderArea()
+        {
+            var unit1 = CreateUnits("cool-stuff", 20);
+            var unit2 = CreateUnits("bad-things", 10);
+            await Task.WhenAll(unit1.Concat(unit2).Select(u => _store.SaveAsync(u)));
+
+            var results = _store.GetAll("cool-stuff");
+
+            results.Count.Should().Be(20);
+            results.Any(x => x.Namespace == "bad-things").Should().BeFalse();
+            results.Any(x => x.Namespace == "cool-stuff").Should().BeTrue();
+        }
+
+        private IEnumerable<TestUnit> CreateUnits(string area, int count)
+        {
+            return Enumerable.Range(0, count).Select(i =>
+            _fixture.Build<TestUnit>()
+            .With(x => x.Namespace, area)
+            .With(x => x.Meta, new TestMeta(new Id(Guid.NewGuid().ToString())))
+            .With(x => x.Children, new List<IUnit>()).Create());
         }
 
         public void Dispose()
@@ -101,21 +126,25 @@ namespace ContentPOC.Integration
         // TODO: tightly coupling ID to hash causes an excessively rigid codebase.  Decouple
         public class TestUnit : IUnit
         {
-            public string Namespace => nameof(TestUnit);
+            public string Namespace { get; set; } = nameof(TestUnit);
 
-            public Meta Meta { get; set; }
+            public IMeta Meta { get; set; }
 
             public string Value { get; set; }
 
-            public List<IUnit> Children { get; } = new List<IUnit>();
+            public List<IUnit> Children { get; set; } = new List<IUnit>();
         }
 
-        public class TestMeta : Meta
+        public class TestMeta : IMeta
         {
-            public TestMeta(Id id, IUnit unit) : base(unit)
+            public TestMeta(Id id)
                 => Id = id;
 
-            public override Id Id { get; }
+            public Id Id { get; }
+
+            public Area Area => new Area();
+
+            public string Href => string.Empty;
         }
     }
 }

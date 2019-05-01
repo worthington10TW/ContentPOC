@@ -5,7 +5,7 @@ namespace ContentPOC.Model
 {
     public interface IUnit
     {
-        Meta Meta { get; }
+        IMeta Meta { get; }
         
         string Namespace { get; }
 

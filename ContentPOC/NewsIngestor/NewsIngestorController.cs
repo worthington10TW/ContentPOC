@@ -32,6 +32,9 @@ namespace ContentPOC
             }
         }
 
+        [HttpGet]
+        public IActionResult GetAll() => Ok(_manager.GetAll(NEWS_AREA));
+
         [HttpGet("{id}")]
         public IActionResult Get(string id) => Get(new Id(id), NEWS_AREA);
 

@@ -9,10 +9,11 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using static ContentPOC.Integration.Endpoints.Dto;
 
 namespace ContentPOC.Integration.Endpoints
 {
-    public class NewsChildEndpointTests
+    public class GetNewsChildEndpointTests
     {
         public class HeadlineTests : IngestNewsItemTestSetup
         {

@@ -1,6 +1,8 @@
 ﻿using ContentPOC.Model;
 using ContentPOC.Unit.Model;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ContentPOC.DAL
@@ -35,5 +37,9 @@ namespace ContentPOC.DAL
                 unit,
                 (key, existingUnit) => existingUnit = unit);
 
+        public List<IUnit> GetAll(string area) =>
+            _store.Where(x => x.Value?.Namespace == area)
+            .Select(x => x.Value)
+            .ToList();
     }
 }

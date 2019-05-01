@@ -39,16 +39,5 @@ namespace ContentPOC.Integration.Endpoints
             _testServer.Dispose();
             HttpClient.Dispose();
         }
-
-        public class Meta
-        {
-            public string href { get; set; }
-        }
-
-        public class Child
-        {
-            public string value { get; set; }
-            public Meta meta { get; set; }
-        }
     }
 }
