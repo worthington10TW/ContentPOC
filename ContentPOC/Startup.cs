@@ -39,13 +39,18 @@ namespace ContentPOC
             
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = "Reimagining content", Version = "v1" });
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                if (File.Exists(xmlPath)) c.IncludeXmlComments(xmlPath);
+                if (File.Exists(xmlPath)) {
+                    c.IncludeXmlComments(xmlPath);
+                    Console.WriteLine($"Applying xml {xmlPath}");
+                }
+                else Console.Error.WriteLine($"Could not find path {xmlPath}");
             });
+
         }
 
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
@@ -55,7 +60,7 @@ namespace ContentPOC
                 .UseSwagger()       
                 .UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 })
                 .UseMvc();
         }

@@ -38,7 +38,7 @@ namespace ContentPOC
         [HttpGet("{area}/{id}")]
         public IActionResult Get(string area, string id) => Get(new Id(id), NEWS_AREA, area);
 
-        public IActionResult Get(Id id, params string[] areas)
+        private IActionResult Get(Id id, params string[] areas)
         {
             var result = _manager.Get(areas, id);
             if (result == null)

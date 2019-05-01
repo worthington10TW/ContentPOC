@@ -6,7 +6,6 @@
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
     <Version>$(MajorVersion).$(MinorVersion)</Version>
-    <ProjectGuid>{F2585DB8-4A2A-4F8D-91EB-AB1CB8240433}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>7.1</LangVersion>
@@ -14,6 +13,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.1</LangVersion>
+    <DocumentationFile>bin\Debug\netcoreapp2.2\ContentPOC.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
