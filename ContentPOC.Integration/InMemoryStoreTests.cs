@@ -27,7 +27,7 @@ namespace ContentPOC.Integration
 
         [Fact]
         public void WhenNoResult_ShouldReturnNull() =>
-            _store.Get("super-area", new Id(Guid.NewGuid().ToString()))
+            _store.Get(new[] { "super-area" }, new Id(Guid.NewGuid().ToString()))
                 .Should()
                 .BeNull();
 
@@ -42,7 +42,7 @@ namespace ContentPOC.Integration
             };
             await _store.SaveAsync(unit);
 
-            _store.Get(unit.Namespace, id).Should().BeEquivalentTo(unit);
+            _store.Get(unit.Domain, id).Should().BeEquivalentTo(unit);
         }
 
         [Fact]
@@ -55,10 +55,10 @@ namespace ContentPOC.Integration
                 Value = "i-live/here"
             };
             await _store.SaveAsync(unit);
-            _store.Get(unit.Namespace, id).Should().BeEquivalentTo(unit);
+            _store.Get(unit.Domain, id).Should().BeEquivalentTo(unit);
             _store.Reset();
 
-            _store.Get(unit.Namespace, id).Should().BeNull();
+            _store.Get(unit.Domain, id).Should().BeNull();
         }
 
         [Fact]
@@ -77,7 +77,7 @@ namespace ContentPOC.Integration
 
             await _store.SaveAsync(toReplace);
 
-            _store.Get(toReplace.Namespace, new Id("amazingUnit")).Should().BeEquivalentTo(toReplace);
+            _store.Get(toReplace.Domain, new Id("amazingUnit")).Should().BeEquivalentTo(toReplace);
         }
 
         [Fact]
@@ -91,28 +91,28 @@ namespace ContentPOC.Integration
             };
             await _store.SaveAsync(unit);
 
-            _store.Get(Guid.NewGuid().ToString(), id).Should().BeNull();
+            _store.Get(new[] { Guid.NewGuid().ToString() }, id).Should().BeNull();
         }
 
         [Fact]
         public async Task WhenCallingGetllAll_ShouldGetAllUnderArea()
         {
-            var unit1 = CreateUnits("cool-stuff", 20);
-            var unit2 = CreateUnits("bad-things", 10);
+            var unit1 = CreateUnits(new[] { "cool-stuff" }, 20);
+            var unit2 = CreateUnits(new[] { "bad-things" }, 10);
             await Task.WhenAll(unit1.Concat(unit2).Select(u => _store.SaveAsync(u)));
 
-            var results = _store.GetAll("cool-stuff");
+            var results = _store.GetAll(new[] { "cool-stuff" });
 
             results.Count.Should().Be(20);
-            results.Any(x => x.Namespace == "bad-things").Should().BeFalse();
-            results.Any(x => x.Namespace == "cool-stuff").Should().BeTrue();
+            results.Any(x => x.Domain[0] == "bad-things").Should().BeFalse();
+            results.Any(x => x.Domain[0] == "cool-stuff").Should().BeTrue();
         }
 
-        private IEnumerable<TestUnit> CreateUnits(string area, int count)
+        private IEnumerable<TestUnit> CreateUnits(string[] domain, int count)
         {
             return Enumerable.Range(0, count).Select(i =>
             _fixture.Build<TestUnit>()
-            .With(x => x.Namespace, area)
+            .With(x => x.Domain, domain)
             .With(x => x.Meta, new TestMeta(new Id(Guid.NewGuid().ToString())))
             .With(x => x.Children, new List<IUnit>()).Create());
         }
@@ -126,7 +126,7 @@ namespace ContentPOC.Integration
         // TODO: tightly coupling ID to hash causes an excessively rigid codebase.  Decouple
         public class TestUnit : IUnit
         {
-            public string Namespace { get; set; } = nameof(TestUnit);
+            public string[] Domain { get; set; } = new[] { nameof(TestUnit) };
 
             public IMeta Meta { get; set; }
 
@@ -142,7 +142,7 @@ namespace ContentPOC.Integration
 
             public Id Id { get; }
 
-            public Area Area => new Area();
+            public Area Area => new Area(null);
 
             public string Href => string.Empty;
         }

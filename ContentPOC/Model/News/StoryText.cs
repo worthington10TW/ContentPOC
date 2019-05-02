@@ -7,7 +7,7 @@ namespace ContentPOC.Unit.Model.News
     {
         public StoryText(string value) => Value = value;
 
-        public override string Namespace => "news/story-text";
+        public override string[] Domain => new[]{"news", "story-text"};
 
         public string Value { get; }
     }

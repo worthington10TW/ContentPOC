@@ -13,7 +13,7 @@ namespace ContentPOC.Unit.Model
         public IMeta Meta => new Meta(this);
 
         [JsonIgnore]
-        public abstract string Namespace { get; }
+        public abstract string[] Domain { get; }
 
         public List<IUnit> Children { get; } = new List<IUnit>();
 
@@ -30,7 +30,7 @@ namespace ContentPOC.Unit.Model
                 {
                     ContractResolver = new IgnoreMetaSerializeContractResolver()
                 }).GetStableHashCode()));
-            Area = new Area(unit?.Namespace.Split('/'));
+            Area = new Area(unit?.Domain);
         }
 
         [JsonIgnore]
@@ -57,7 +57,7 @@ namespace ContentPOC.Unit.Model
 
     public class Area
     {
-        public Area(params string[] area) => Value = area;
+        public Area(string[] area) => Value = area;
 
         public string[] Value { get; }
     }

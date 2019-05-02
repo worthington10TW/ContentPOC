@@ -9,8 +9,8 @@ namespace ContentPOC.DAL
     {
         Task<IUnit> SaveAsync(IUnit unit);
 
-        IUnit Get(string area, Id id);
+        IUnit Get(string[] domain, Id id);
 
-        List<IUnit> GetAll(string area);
+        List<IUnit> GetAll(string[] domain);
     }
 }

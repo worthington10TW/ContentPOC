@@ -42,8 +42,8 @@ namespace ContentPOC.NewsIngestor
         }
         
         //TODO this was rushed dev, the idea of the location/areas/namespace has leaked everywhere! should update
-        public IUnit Get(string[] areas, Id id) => _repository.Get(string.Join("/", areas), id);
+        public IUnit Get(string[] domain, Id id) => _repository.Get(domain, id);
 
-        public List<IUnit> GetAll(params string[] areas) => _repository.GetAll(string.Join("/", areas));
+        public List<IUnit> GetAll(params string[] domain) => _repository.GetAll(domain);
     }
 }

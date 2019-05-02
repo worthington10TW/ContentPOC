@@ -7,7 +7,7 @@ namespace ContentPOC.Model
     {
         IMeta Meta { get; }
         
-        string Namespace { get; }
+        string[] Domain { get; }
 
         List<IUnit> Children { get; }
     }

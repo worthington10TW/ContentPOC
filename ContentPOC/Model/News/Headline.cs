@@ -8,10 +8,10 @@ namespace ContentPOC.Unit.Model.News
     public class Headline : Unit
     {
         public Headline(string value) => Value = value;
-        
+
         //TODO Unit types need namespace consideration
-        public override string Namespace => "news/headlines";
-        
+        public override string[] Domain => new[] { "news", "headlines" };
+
         public string Value { get; private set; }
     }
 }
