@@ -10,5 +10,7 @@ namespace ContentPOC.Model
         string[] Domain { get; }
 
         List<IUnit> Children { get; }
+
+        List<IMark> Marks { get; }
     }
 }

@@ -28,7 +28,7 @@ namespace ContentPOC.Integration.Endpoints
             {
                 _repository = Services.GetService<IRepository>();
                 SaveSampleData().GetAwaiter().GetResult();
-                _response = HttpClient.GetAsync($"/api/news/headlines/B0AC7692/")
+                _response = HttpClient.GetAsync($"/news/headlines/" + units[0].Meta.Id.Value)
                     .GetAwaiter()
                     .GetResult();
             }

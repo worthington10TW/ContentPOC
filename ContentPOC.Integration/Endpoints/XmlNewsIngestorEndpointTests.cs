@@ -2,6 +2,8 @@
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -16,6 +18,7 @@ namespace ContentPOC.Integration.Endpoints
     public class XmlNewsIngestorEndpointTests : IngestNewsItemTestSetup
     {
         protected readonly HttpResponseMessage _xmlPostResponse;
+        private readonly string _newsId;
         public XmlNewsIngestorEndpointTests()
         {
             var content = new StringContent(
@@ -23,9 +26,10 @@ namespace ContentPOC.Integration.Endpoints
                     System.Text.Encoding.UTF8,
                     "application/xml");
             _xmlPostResponse = HttpClient
-                .PostAsync("/api/news", content)
+                .PostAsync("/news", content)
                 .GetAwaiter()
                 .GetResult();
+            _newsId = _xmlPostResponse.Headers.Location.ToString().Split("/").Last();
         }
 
         [Fact]
@@ -40,17 +44,17 @@ namespace ContentPOC.Integration.Endpoints
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
             _xmlPostResponse.Headers.Location.ToString()
-            .Should().Be($"http://localhost/news/" + NEWS_ID);
+            .Should().Be($"http://localhost/news/" + _newsId);
 
         [Fact]
         public async Task ShouldReturnNotFound_WhenIdDoesNotExist() =>
-            await HttpClient.GetAsync($"/api/news/{Guid.NewGuid()}")
+            await HttpClient.GetAsync($"/news/{Guid.NewGuid()}")
                 .ContinueWith(x => x.Result.StatusCode.Should().Be(HttpStatusCode.NotFound));
 
         [Fact]
         public async Task ShouldGetInsertedNewsItem()
         {
-            var getResponse = await HttpClient.GetAsync($"/api/news/{NEWS_ID}");
+            var getResponse = await HttpClient.GetAsync($"/news/{_newsId}");
 
             getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await getResponse.Content.ReadAsAsync<NewsDto>();
@@ -62,25 +66,19 @@ namespace ContentPOC.Integration.Endpoints
         {
             var queue = Services.GetService<INotificationQueue>();
             var rawNewsContentIngestedEvent = await queue.DequeueAsync(CancellationToken.None);
-            rawNewsContentIngestedEvent.Location.Should().Be($"news/{NEWS_ID}");
+            rawNewsContentIngestedEvent.Location.Should().Be($"news/{_newsId}");
         }
 
         private void AssertResponse(NewsDto content)
         {
-            content.meta.href.Should().Be("news/55F02F12");
-            content.children[0].meta.href.Should().Be("news/headlines/58EFB077");
-            content.children[0].value.Should().Be("This is a headlines");
-            content.children[1].meta.href.Should().Be("news/story-summaries/155A557C");
-            content.children[1].value.Should().Be("This is a summary");
-            content.children[2].meta.href.Should().Be("news/story-text/2151A298");
-            content.children[2].value.Should().Be("Lorem ipsum");
+            content.meta.href.Should().Be("news/" + _newsId);
+            content.children[0].value.Should().Be("What are the practical implications of this case?");
+            content.children[1].value.Should().Be(@"
+        The case of AJ v DM provides an illustration of the legal complications which can arise on separation, for international families, with multiple litigation taking place across borders. It highlights the financial limitations imposed where jurisdiction for divorce in England and Wales is based on one party’s sole domicile, which was a particularly acute issue in this case, which involved negligible capital and a reasonably big income. Here, although Cohen J expressed sympathy with the wife’s predicament, he was unable to bestow jurisdiction where it did not exist.
+      ");
+            content.children[2].value.Should().Be(@"Further afield, there were also proceedings in Australia and St Lucia. In Australia, there was jurisdiction for freestanding financial proceedings which could deal with the assets situated there and address the needs, and in St Lucia, while there was no jurisdiction for divorce, the wife had made an application for leave to remove regarding the parties’ child which, if granted, would provide her with the opportunity to re-ignite the array of financial applications in England and Wales that were either not currently available or paused.");
         }
 
-        private readonly string _testXml = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<news>
-<headline>This is a headlines</headline>
-<summary>This is a summary</summary>
-<story>Lorem ipsum</story>
-</news>";
+        private readonly string _testXml = File.ReadAllText(Path.Combine("Endpoints", "News.xml"));
     }
 }

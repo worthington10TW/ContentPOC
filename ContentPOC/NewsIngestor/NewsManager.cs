@@ -5,9 +5,9 @@ using ContentPOC.Model;
 using ContentPOC.Model.News;
 using ContentPOC.Unit.Model;
 using ContentPOC.Unit.Model.News;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace ContentPOC.NewsIngestor
 {
@@ -27,7 +27,7 @@ namespace ContentPOC.NewsIngestor
             _queue = queue;
         }
 
-        public async Task<IUnit> SaveAsync(NewsRequestXml request)
+        public async Task<IUnit> SaveAsync(XmlDocument request)
         {
             var result = await _converter.CreateAsync(request);
             return await _repository
@@ -36,11 +36,12 @@ namespace ContentPOC.NewsIngestor
                 {
                     // TODO: Change this to drive out the domain.
                     _queue.Queue(new RawNewsContentIngested { Location = r.Result.Meta.Href });
+                    r.Result.Children.ForEach(c => _queue.Queue(new RawNewsContentIngested { Location = c.Meta.Href }));
                     return r.Result;
                 },
                 TaskContinuationOptions.OnlyOnRanToCompletion);
         }
-        
+
         //TODO this was rushed dev, the idea of the location/areas/namespace has leaked everywhere! should update
         public IUnit Get(string[] domain, Id id) => _repository.Get(domain, id);
 

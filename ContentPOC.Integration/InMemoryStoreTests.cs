@@ -133,6 +133,8 @@ namespace ContentPOC.Integration
             public string Value { get; set; }
 
             public List<IUnit> Children { get; set; } = new List<IUnit>();
+
+            public List<IMark> Marks => new List<IMark>();
         }
 
         public class TestMeta : IMeta

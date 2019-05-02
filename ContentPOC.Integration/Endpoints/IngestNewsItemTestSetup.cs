@@ -14,7 +14,6 @@ namespace ContentPOC.Integration.Endpoints
         private readonly TestServer _testServer;
         protected readonly HttpClient HttpClient;
         protected readonly IServiceProvider Services;
-        protected const string NEWS_ID = "55F02F12";
 
         public IngestNewsItemTestSetup()
         {

@@ -29,7 +29,7 @@ namespace ContentPOC.Integration.Endpoints
                 .OrderBy(x => x.Meta.Href)
                 .ToArray();
             SaveSampleData(_units, _repository).GetAwaiter().GetResult();
-            _response = HttpClient.GetAsync($"/api/news/")
+            _response = HttpClient.GetAsync($"/news/")
                 .GetAwaiter()
                 .GetResult();
         }
