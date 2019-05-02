@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
+using static ContentPOC.Integration.Endpoints.Dto;
 
 namespace ContentPOC.Integration.Endpoints
 {
@@ -25,6 +26,7 @@ namespace ContentPOC.Integration.Endpoints
             _units = 
                 Enumerable.Range(0, 100)
                 .Select(i => new NewsItem(_fixture.Create<Headline>()))
+                .OrderBy(x => x.Meta.Href)
                 .ToArray();
             SaveSampleData(_units, _repository).GetAwaiter().GetResult();
             _response = HttpClient.GetAsync($"/api/news/")
@@ -36,13 +38,16 @@ namespace ContentPOC.Integration.Endpoints
         public void ShouldReturn200Response_WhenExist() =>
             _response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        //[Fact]
-        //public async Task ShouldGetInsertedHeadline()
-        //{
-        //    var values = await _response.Content.ReadAsAsync<NewsDto[]>();
-        //    foreach (var value in values)
-        //        value.meta.href.Should().Be(_units[0].Meta.Href);
-        //}
+        [Fact]
+        public async Task ShouldGetInsertedHeadline()
+        {
+            var values = await _response.Content.ReadAsAsync<NewsDto[]>();
+            values = values.OrderBy(x => x.meta.href).ToArray();
+            for(var i = 0; i < values.Length; i++)
+                values[i].children[0].value
+                    .Should()
+                    .Be((_units[i].Children[0] as Headline).Value);
+        }
 
         private static async Task SaveSampleData(IUnit[] units, IRepository repository) =>
             await Task.WhenAll(units.Select(h => repository.SaveAsync(h)));
