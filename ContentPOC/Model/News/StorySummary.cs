@@ -1,14 +1,9 @@
-﻿using System.Diagnostics;
-
-namespace ContentPOC.Unit.Model.News
+﻿namespace ContentPOC.Unit.Model.News
 {
-    [DebuggerDisplay("Value = {Value}")]
-    public class StorySummary : Unit
+    public class StorySummary : StringValue
     {
-        public StorySummary(string value) => Value = value;
+        public StorySummary(string value) : base(value) { }
 
         public override string[] Domain => new[] { "news", "story-summaries" };
-
-        public string Value { get; }
     }
 }

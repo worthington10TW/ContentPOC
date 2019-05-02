@@ -1,6 +1,7 @@
 ﻿using ContentPOC.NewsIngestor;
 using ContentPOC.Unit.Model;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -12,7 +13,7 @@ namespace ContentPOC
     {
         private const string NEWS_AREA = "news";
         private readonly NewsManager _manager;
-
+        
         public NewsIngestorController(NewsManager manager) => _manager = manager;
 
         //TODO lock down to XML
@@ -28,7 +29,10 @@ namespace ContentPOC
 
                 //TODO I'm too lazy to make a real view model, this will do for now
                 dynamic value = result;
-                return Created(result.Meta.Href, result);
+                return Created(
+                    new Uri(new Uri("http://" + Request.Host.Value),
+                    result.Meta.Href),
+                    result);
             }
         }
 

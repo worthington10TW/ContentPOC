@@ -1,12 +1,12 @@
 ﻿using ContentPOC.HostedService;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
-using System.Threading;
 using static ContentPOC.Integration.Endpoints.Dto;
 
 namespace ContentPOC.Integration.Endpoints
@@ -33,14 +33,14 @@ namespace ContentPOC.Integration.Endpoints
             _xmlPostResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
         [Fact]
-        public async Task ShouldReturnNewsResponse_WhenPostingXml() => 
+        public async Task ShouldReturnNewsResponse_WhenPostingXml() =>
             await _xmlPostResponse.Content.ReadAsAsync<NewsDto>()
             .ContinueWith(content => AssertResponse(content.Result));
-        
+
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
             _xmlPostResponse.Headers.Location.ToString()
-            .Should().Be($"news/{NEWS_ID}");
+            .Should().Be($"http://localhost/news/" + NEWS_ID);
 
         [Fact]
         public async Task ShouldReturnNotFound_WhenIdDoesNotExist() =>

@@ -2,13 +2,10 @@
 
 namespace ContentPOC.Unit.Model.News
 {
-    [DebuggerDisplay("Value = {Value}")]
-    public class StoryText : Unit
+    public class StoryText : StringValue
     {
-        public StoryText(string value) => Value = value;
+        public StoryText(string value) : base(value) { }
 
         public override string[] Domain => new[]{"news", "story-text"};
-
-        public string Value { get; }
     }
 }
