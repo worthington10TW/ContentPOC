@@ -2,9 +2,11 @@
 using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.NewsIngestor;
+using ContentPOC.Seed;
 using ContentPOC.Unit.Model.News;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.Swagger;
@@ -38,6 +40,11 @@ namespace ContentPOC
                 .AddTransient<IHostedService, NotificationHubService>()
                 .AddTransient<INotificationHub, SimulationNotificationHub>();
 
+            services
+                .AddSingleton<XmlSeeder>()
+                .AddHttpClient()
+                .AddHttpContextAccessor();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Reimagining content", Version = "v1" });
@@ -66,6 +73,9 @@ namespace ContentPOC
                     c.RoutePrefix = string.Empty;
                 })
                 .UseMvc();
+            
+            app.ApplicationServices.GetService<XmlSeeder>()
+                .SeedAsync().GetAwaiter().GetResult();
         }
     }
 }

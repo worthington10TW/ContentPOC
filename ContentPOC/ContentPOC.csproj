@@ -19,6 +19,14 @@
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Seed\Data\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Seed\Data\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Properties\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
