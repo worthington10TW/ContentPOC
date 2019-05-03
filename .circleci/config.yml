@@ -16,7 +16,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/out
-      - run: dotnet publish -c Release -o ../publish  && chmod +x ~/publish
+      - run: dotnet publish -c Release -o ../publish  && chmod +x ~/publish && ls publish
       - persist_to_workspace:
           root: .
           paths: publish
