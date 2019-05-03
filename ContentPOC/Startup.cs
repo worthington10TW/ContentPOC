@@ -27,7 +27,8 @@ namespace ContentPOC
             services.AddMvcCore();
 
             services
-                .AddSingleton<IConverter<NewsItem>>(x => new NewsConverter())
+                .AddSingleton<DynamicNamespaceManager>()
+                .AddSingleton<IConverter<NewsItem>, NewsConverter>()
                 .AddSingleton<IRepository, InMemoryStore>()
                 .AddTransient<NewsManager>()
                 .AddSingleton<NewsConverter>()
@@ -36,7 +37,7 @@ namespace ContentPOC
             services
                 .AddTransient<IHostedService, NotificationHubService>()
                 .AddTransient<INotificationHub, SimulationNotificationHub>();
-            
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Reimagining content", Version = "v1" });
@@ -44,7 +45,8 @@ namespace ContentPOC
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                if (File.Exists(xmlPath)) {
+                if (File.Exists(xmlPath))
+                {
                     c.IncludeXmlComments(xmlPath);
                     Console.WriteLine($"Applying xml {xmlPath}");
                 }
@@ -57,10 +59,11 @@ namespace ContentPOC
         {
             (env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseStatusCodePages())
                 .UseStaticFiles()
-                .UseSwagger()       
+                .UseSwagger()
                 .UseSwaggerUI(c =>
                 {
-                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                    c.RoutePrefix = string.Empty;
                 })
                 .UseMvc();
         }

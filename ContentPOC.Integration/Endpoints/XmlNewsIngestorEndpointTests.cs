@@ -79,6 +79,6 @@ namespace ContentPOC.Integration.Endpoints
             content.children[2].value.Should().Be(@"Further afield, there were also proceedings in Australia and St Lucia. In Australia, there was jurisdiction for freestanding financial proceedings which could deal with the assets situated there and address the needs, and in St Lucia, while there was no jurisdiction for divorce, the wife had made an application for leave to remove regarding the parties’ child which, if granted, would provide her with the opportunity to re-ignite the array of financial applications in England and Wales that were either not currently available or paused.");
         }
 
-        private readonly string _testXml = File.ReadAllText(Path.Combine("Endpoints", "News.xml"));
+        private readonly string _testXml = File.ReadAllText(Path.Combine("Endpoints", "3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview"));
     }
 }
