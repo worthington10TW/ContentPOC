@@ -22,9 +22,7 @@ namespace ContentPOC.DAL
 
         public Task<IUnit> SaveAsync(IUnit unit)
         {
-            // TODO: run in parallel
-            unit.Children.ForEach(u => Save(u));
-
+            unit.Children.AsParallel().ForAll(u => Save(u));
             // TODO: this really needs IUnit not to be a DTO.  (We need to map so we don't bleed down.)
             return Task.FromResult(Save(unit));
         }
