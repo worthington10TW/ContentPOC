@@ -72,13 +72,14 @@ namespace ContentPOC.Integration.Endpoints
         private void AssertResponse(NewsDto content)
         {
             content.meta.href.Should().Be("news/" + _newsId);
-            content.children[0].value.Should().Be("What are the practical implications of this case?");
-            content.children[1].value.Should().Be(@"
-        The case of AJ v DM provides an illustration of the legal complications which can arise on separation, for international families, with multiple litigation taking place across borders. It highlights the financial limitations imposed where jurisdiction for divorce in England and Wales is based on one party’s sole domicile, which was a particularly acute issue in this case, which involved negligible capital and a reasonably big income. Here, although Cohen J expressed sympathy with the wife’s predicament, he was unable to bestow jurisdiction where it did not exist.
-      ");
-            content.children[2].value.Should().Be(@"Further afield, there were also proceedings in Australia and St Lucia. In Australia, there was jurisdiction for freestanding financial proceedings which could deal with the assets situated there and address the needs, and in St Lucia, while there was no jurisdiction for divorce, the wife had made an application for leave to remove regarding the parties’ child which, if granted, would provide her with the opportunity to re-ignite the array of financial applications in England and Wales that were either not currently available or paused.");
+            content.children[0].value.Should().Be("Examining the impact of Brexit and UK-wide common frameworks on devolution ");
+            content.children[1].value.Should().Be(@"Public Law analysis: Kenneth Campbell QC, MCIArb, advocate at Arnot Manderson Advocates and barrister at Lamb Building, considers the interaction between Brexit and UK devolution, the use of UK-wide common legislative frameworks to maintain harmonisation in the UK market once powers and competences exercised at EU level are repatriated, and the impact for the devolved administrations in Scotland, Wales and Northern Ireland.");
+            content.children[2].value.Should().Be(@"All three devolution structures in the UK involve interaction with areas of EU law and EU competence, and that interaction is complex. As the UK devolution settlements are asymmetrical, a different range of powers is relevant to Scotland, Wales and Northern Ireland.");
         }
 
-        private readonly string _testXml = File.ReadAllText(Path.Combine("Endpoints", "3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview"));
+        private readonly string _testXml = File.ReadAllText(
+            Path.Combine(
+                "Endpoints",
+                "3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml"));
     }
 }

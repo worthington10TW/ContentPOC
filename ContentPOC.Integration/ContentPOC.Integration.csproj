@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Endpoints\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml" />
+    <None Remove="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce %28AJ v DM%29_preview.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce (AJ v DM)_preview.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Endpoints\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.8.0" />
     <PackageReference Include="FluentAssertions" Version="5.6.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.2.0" />
@@ -24,6 +39,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ContentPOC\ContentPOC.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce %28AJ v DM%29_preview.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
