@@ -11,21 +11,22 @@ jobs:
   publish:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk
+    working_directory: ~/out
     steps:
       - checkout
-      - restore_cache:
-          key: out-v2-{{ .Branch }}-{{ .Revision }}
-      - run: dotnet publish -c Release -o ../publish  && chmod +x publish
-      - save_cache:
-          key: out-v2-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - publish  
-  heroku-push:
+      - attach_workspace:
+          at: ~/out
+      - run: dotnet publish -c Release -o ../publish  && chmod +x ~/publish
+      - persist_to_workspace:
+          root: .
+          paths: publish
+  heroku-push:  
+    working_directory: ~/out
     machine: true
     steps:
       - checkout
-      - restore_cache:
-          key: out-v2-{{ .Branch }}-{{ .Revision }}
+      - attach_workspace:
+          at: ~/out
       - run:
           name: Setup Heroku
           command: chmod +x .circleci/setup-heroku.sh && .circleci/setup-heroku.sh worthington10tw-content
