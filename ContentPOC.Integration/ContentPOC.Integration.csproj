@@ -8,10 +8,19 @@
   <ItemGroup>
     <None Remove="Endpoints\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml" />
     <None Remove="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce %28AJ v DM%29_preview.xml" />
+    <None Remove="Seed\Data\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml" />
+    <None Remove="publish\appsettings.json" />
+    <None Remove="out\appsettings.json" />
+    <None Remove="out\zh-Hant\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
+    <None Remove="out\zh-Hant\Microsoft.VisualStudio.TraceDataCollector.resources.dll" />
+    <None Remove="out\zh-Hant\System.Spatial.resources.dll" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce (AJ v DM)_preview.xml" />
+    <Content Include="Seed\Data\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -40,4 +49,7 @@
     <ProjectReference Include="..\ContentPOC\ContentPOC.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Seed\" />
+  </ItemGroup>
 </Project>

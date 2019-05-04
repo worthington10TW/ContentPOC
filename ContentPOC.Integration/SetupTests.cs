@@ -69,10 +69,15 @@ namespace ContentPOC.Integration
 
         [Fact]
         public void ShouldIngestSeedData()
-        { 
-        var repository = _provider.GetService<IRepository>();
-            repository.GetAll(new[] { "news" }).Count.Should().BeGreaterThan(0);
+        {
+            var repository = _provider.GetServices<IHostedService>();
+            repository.Cast<NotificationHubService>().First().DisableService();
 
-    }
+            _provider.GetService<IRepository>()
+              .GetAll(new[] { "news" }).Count
+              .Should().BeGreaterThan(0);
+
+        }
+          
     }
 }
