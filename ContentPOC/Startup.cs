@@ -32,7 +32,7 @@ namespace ContentPOC
                 .AddSingleton<DynamicNamespaceManager>()
                 .AddSingleton<IConverter<NewsItem>, NewsConverter>()
                 .AddSingleton<IRepository, InMemoryStore>()
-                .AddTransient<NewsManager>()
+                .AddTransient<IManager<NewsItem>, NewsManager>()
                 .AddSingleton<NewsConverter>()
                 .AddSingleton<INotificationQueue, RawNewsContentIngestedQueue>();
 
@@ -75,7 +75,7 @@ namespace ContentPOC
                 .UseMvc();
             
             app.ApplicationServices.GetService<XmlSeeder>()
-                .SeedAsync().GetAwaiter().GetResult();
+                .SeedAsync(Path.Combine("Seed", "Data")).GetAwaiter().GetResult();
         }
     }
 }

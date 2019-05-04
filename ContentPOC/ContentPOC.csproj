@@ -53,4 +53,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="NewsIngestor\IManager.cs" />
+  </ItemGroup>
 </Project>

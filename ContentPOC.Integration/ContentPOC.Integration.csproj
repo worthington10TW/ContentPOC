@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>false</IsPackable>
-    <ProjectGuid>{FEC1DAA7-4119-4FCF-874F-29EF542E8433}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,12 +38,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ContentPOC\ContentPOC.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce %28AJ v DM%29_preview.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

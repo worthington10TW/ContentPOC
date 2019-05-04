@@ -1,8 +1,5 @@
 ﻿using ContentPOC.HostedService;
-using ContentPOC.Model;
 using ContentPOC.Model.News;
-using ContentPOC.Unit;
-using ContentPOC.Unit.Model;
 using FluentAssertions;
 using System;
 using System.Threading;

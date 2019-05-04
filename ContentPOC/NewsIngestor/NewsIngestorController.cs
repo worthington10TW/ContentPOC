@@ -1,5 +1,6 @@
 ﻿using ContentPOC.NewsIngestor;
 using ContentPOC.Unit.Model;
+using ContentPOC.Unit.Model.News;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -7,15 +8,26 @@ using System.Xml;
 
 namespace ContentPOC
 {
+    /// <summary>
+    /// News ingestor controller.
+    /// </summary>
     [Route(NEWS_AREA)]
     public class NewsIngestorController : Controller
     {
         private const string NEWS_AREA = "news";
-        private readonly NewsManager _manager;
+        private readonly IManager<NewsItem> _manager;
 
-        public NewsIngestorController(NewsManager manager) => _manager = manager;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:ContentPOC.NewsIngestorController"/> class.
+        /// </summary>
+        /// <param name="manager">Manager.</param>
+        public NewsIngestorController(IManager<NewsItem> manager) => _manager = manager;
 
         //TODO lock down to XML
+        /// <summary>
+        /// Post this instance.
+        /// </summary>
+        /// <returns>The post.</returns>
         [HttpPost]
         public async Task<IActionResult> Post()
         {
@@ -32,12 +44,27 @@ namespace ContentPOC
             //}
         }
 
+        /// <summary>
+        /// Gets all.
+        /// </summary>
+        /// <returns>The all.</returns>
         [HttpGet]
         public IActionResult GetAll() => Ok(_manager.GetAll(NEWS_AREA));
 
+        /// <summary>
+        /// Get the specified id.
+        /// </summary>
+        /// <returns>The get.</returns>
+        /// <param name="id">Identifier.</param>
         [HttpGet("{id}")]
         public IActionResult Get(string id) => Get(new Id(id), NEWS_AREA);
 
+        /// <summary>
+        /// Get the specified area and id.
+        /// </summary>
+        /// <returns>The get.</returns>
+        /// <param name="area">Area.</param>
+        /// <param name="id">Identifier.</param>
         [HttpGet("{area}/{id}")]
         public IActionResult Get(string area, string id) => Get(new Id(id), NEWS_AREA, area);
 

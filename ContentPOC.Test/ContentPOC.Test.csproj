@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsPackable>false</IsPackable>
-    <ProjectGuid>{59173862-0DF4-4F4C-B978-1883B358A894}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,4 +22,23 @@
     <ProjectReference Include="..\ContentPOC\ContentPOC.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SeedData\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="SeedData\NoIngest.txt" />
+    <None Remove="SeedData\Test.xml" />
+    <None Remove="SeedData\Test1.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SeedData\NoIngest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SeedData\Test.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SeedData\Test1.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

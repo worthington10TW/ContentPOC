@@ -11,7 +11,16 @@ using System.Xml;
 
 namespace ContentPOC.NewsIngestor
 {
-    public class NewsManager
+    public interface IManager<TUnit> where TUnit : IUnit
+    {
+        Task<IUnit> SaveAsync(XmlDocument request);
+
+        IUnit Get(string[] domain, Id id);
+
+        List<IUnit> GetAll(params string[] domain);
+    }
+
+    public class NewsManager : IManager<NewsItem>
     {
         private readonly IConverter<NewsItem> _converter;
         private readonly IRepository _repository;
