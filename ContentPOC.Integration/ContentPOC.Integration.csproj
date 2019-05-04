@@ -52,4 +52,7 @@
   <ItemGroup>
     <Folder Include="Seed\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Seed\XmlSeeder.cs" />
+  </ItemGroup>
 </Project>

@@ -66,18 +66,5 @@ namespace ContentPOC.Integration
             repository.Cast<NotificationHubService>()
                 .Should().NotBeEmpty();
         }
-
-        [Fact]
-        public void ShouldIngestSeedData()
-        {
-            var repository = _provider.GetServices<IHostedService>();
-            repository.Cast<NotificationHubService>().First().DisableService();
-
-            _provider.GetService<IRepository>()
-              .GetAll(new[] { "news" }).Count
-              .Should().BeGreaterThan(0);
-
-        }
-          
     }
 }

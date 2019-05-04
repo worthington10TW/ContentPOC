@@ -9,7 +9,6 @@ namespace ContentPOC.HostedService
     {
         private readonly INotificationQueue _taskQueue;
         private readonly INotificationHub _hub;
-        private bool disable = false;
 
         public NotificationHubService(INotificationQueue taskQueue, INotificationHub hub)
         {
@@ -17,13 +16,11 @@ namespace ContentPOC.HostedService
             _hub = hub;
         }
 
-        public void DisableService() => disable = true;
-
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("Queued Hosted Service is starting.");
 
-            while (!cancellationToken.IsCancellationRequested || !disable)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 var @event = await _taskQueue.DequeueAsync(cancellationToken);
 

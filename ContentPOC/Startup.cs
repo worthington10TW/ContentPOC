@@ -75,7 +75,8 @@ namespace ContentPOC
                 .UseMvc();
             
             app.ApplicationServices.GetService<XmlSeeder>()
-                .SeedAsync(Path.Combine("Seed", "Data")).GetAwaiter().GetResult();
+                .SeedAsync(Path.Combine("Seed", "Data"))
+                .GetAwaiter().GetResult();
         }
     }
 }
