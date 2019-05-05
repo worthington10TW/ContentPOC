@@ -78,5 +78,16 @@ namespace ContentPOC
             return Ok(value);
         }
 
+        [HttpPut("{id}")]
+        public IActionResult Put(Guid id) => Put(id, NEWS_AREA);
+
+        private IActionResult Put(Guid id, params string[] areas)
+        {
+            var result = _manager.Get(areas, id);
+            if (result == null)
+                return NotFound();
+
+            return Ok();
+        }
     }
 }
