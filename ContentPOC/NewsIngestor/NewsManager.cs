@@ -3,9 +3,10 @@ using ContentPOC.DAL;
 using ContentPOC.HostedService;
 using ContentPOC.Model;
 using ContentPOC.Model.News;
-using ContentPOC.Unit.Model;
 using ContentPOC.Unit.Model.News;
+using System;
 using System.Collections.Generic;
+
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -15,7 +16,7 @@ namespace ContentPOC.NewsIngestor
     {
         Task<IUnit> SaveAsync(XmlDocument request);
 
-        IUnit Get(string[] domain, Id id);
+        IUnit Get(string[] domain, Guid id);
 
         List<IUnit> GetAll(params string[] domain);
     }
@@ -38,7 +39,8 @@ namespace ContentPOC.NewsIngestor
 
         public async Task<IUnit> SaveAsync(XmlDocument request)
         {
-            var result = await _converter.CreateAsync(request);
+            var result = _converter.Create(request);
+
             return await _repository
                 .SaveAsync(result)
                 .ContinueWith(r =>
@@ -52,7 +54,7 @@ namespace ContentPOC.NewsIngestor
         }
 
         //TODO this was rushed dev, the idea of the location/areas/namespace has leaked everywhere! should update
-        public IUnit Get(string[] domain, Id id) => _repository.Get(domain, id);
+        public IUnit Get(string[] domain, Guid id) => _repository.Get(domain, id);
 
         public List<IUnit> GetAll(params string[] domain) => _repository.GetAll(domain);
     }

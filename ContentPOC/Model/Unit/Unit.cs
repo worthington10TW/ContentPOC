@@ -1,7 +1,7 @@
-﻿using ContentPOC.Converter;
-using ContentPOC.Model;
+﻿using ContentPOC.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +10,9 @@ namespace ContentPOC.Unit.Model
 {
     public abstract class Unit : IUnit
     {
-        public IMeta Meta => new Meta(this);
+        protected Unit() => Meta = new Meta(this);
+
+        public IMeta Meta { get; }
 
         [JsonIgnore]
         public abstract string[] Domain { get; }
@@ -24,37 +26,26 @@ namespace ContentPOC.Unit.Model
 
     public class Meta : IMeta
     {
-        public Meta(IUnit unit)
-        {
-            Id = new Id(string.Format("{0:X}", JsonConvert.SerializeObject(
-                unit,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new IgnoreMetaSerializeContractResolver()
-                }).GetStableHashCode()));
+        public Meta(IUnit unit) =>
             Area = new Area(unit?.Domain);
-        }
 
         [JsonIgnore]
-        public virtual Id Id { get; }
+        public Guid Id { get; private set; } = Guid.NewGuid();
+
+        public void SetId(Guid id) => Id = id;
 
         [JsonIgnore]
         public virtual Area Area { get; }
 
-        public string Href => $"{string.Join("/", Area?.Value)}/{Id.Value}";
+        public string Href => $"{string.Join("/", Area?.Value)}/{Id}";
     }
 
     public interface IMeta
     {
-        Id Id { get; }
+        Guid Id { get; }
         Area Area { get; }
         string Href { get; }
-    }
-
-    public class Id
-    {
-        public Id(string id) => Value = id;
-        public string Value { get; }
+        void SetId(Guid id);
     }
 
     public class Area

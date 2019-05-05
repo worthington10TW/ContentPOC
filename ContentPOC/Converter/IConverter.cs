@@ -6,6 +6,6 @@ namespace ContentPOC.Converter
 {
     public interface IConverter<T> where T : IUnit
     {
-        Task<IUnit> CreateAsync(XmlDocument xml);
+        IUnit Create(XmlDocument xml);
     }
 }

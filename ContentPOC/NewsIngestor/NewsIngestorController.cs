@@ -57,7 +57,7 @@ namespace ContentPOC
         /// <returns>The get.</returns>
         /// <param name="id">Identifier.</param>
         [HttpGet("{id}")]
-        public IActionResult Get(string id) => Get(new Id(id), NEWS_AREA);
+        public IActionResult Get(Guid id) => Get(id, NEWS_AREA);
 
         /// <summary>
         /// Get the specified area and id.
@@ -66,9 +66,9 @@ namespace ContentPOC
         /// <param name="area">Area.</param>
         /// <param name="id">Identifier.</param>
         [HttpGet("{area}/{id}")]
-        public IActionResult Get(string area, string id) => Get(new Id(id), NEWS_AREA, area);
+        public IActionResult Get(string area, Guid id) => Get(id, NEWS_AREA, area);
 
-        private IActionResult Get(Id id, params string[] areas)
+        private IActionResult Get(Guid id, params string[] areas)
         {
             var result = _manager.Get(areas, id);
             if (result == null)

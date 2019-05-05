@@ -1,5 +1,6 @@
 ﻿using ContentPOC.Model;
 using ContentPOC.Unit.Model;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace ContentPOC.DAL
     {
         Task<IUnit> SaveAsync(IUnit unit);
 
-        IUnit Get(string[] domain, Id id);
+        IUnit Get(string[] domain, Guid id);
 
         List<IUnit> GetAll(string[] domain);
     }

@@ -313,6 +313,7 @@
     <None Remove="out\zh-Hant\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
     <None Remove="out\zh-Hant\Microsoft.VisualStudio.TraceDataCollector.resources.dll" />
     <None Remove="out\zh-Hant\System.Spatial.resources.dll" />
+    <None Remove="3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SeedData\NoIngest.txt">
@@ -322,6 +323,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="SeedData\Test1.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NewsConverterTests.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

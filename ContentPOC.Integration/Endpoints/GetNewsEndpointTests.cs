@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using ContentPOC.DAL;
+using ContentPOC.Extensions;
 using ContentPOC.Model;
 using ContentPOC.Unit.Model.News;
 using FluentAssertions;
@@ -23,12 +24,14 @@ namespace ContentPOC.Integration.Endpoints
         public GetNewsEndpointTests()
         {
             _repository = Services.GetService<IRepository>();
-            _units = 
-                Enumerable.Range(0, 100)
+            (_repository as InMemoryStore).Reset();
+
+            _units = Enumerable.Range(0, 10)
                 .Select(i => new NewsItem(_fixture.Create<Headline>()))
                 .OrderBy(x => x.Meta.Href)
                 .ToArray();
             SaveSampleData(_units, _repository).GetAwaiter().GetResult();
+
             _response = HttpClient.GetAsync($"/news/")
                 .GetAwaiter()
                 .GetResult();
@@ -43,13 +46,13 @@ namespace ContentPOC.Integration.Endpoints
         {
             var values = await _response.Content.ReadAsAsync<NewsDto[]>();
             values = values.OrderBy(x => x.meta.href).ToArray();
-            for(var i = 0; i < values.Length; i++)
+            for (var i = 0; i < values.Length; i++)
                 values[i].children[0].value
                     .Should()
                     .Be((_units[i].Children[0] as Headline).Value);
         }
 
         private static async Task SaveSampleData(IUnit[] units, IRepository repository) =>
-            await Task.WhenAll(units.Select(h => repository.SaveAsync(h)));
+            await Task.WhenAll(units.Select(repository.SaveAsync));
     }
 }

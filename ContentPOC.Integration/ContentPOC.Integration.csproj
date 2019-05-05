@@ -18,9 +18,6 @@
 
   <ItemGroup>
     <Content Include="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce (AJ v DM)_preview.xml" />
-    <Content Include="Seed\Data\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -49,9 +46,6 @@
     <ProjectReference Include="..\ContentPOC\ContentPOC.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Seed\" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Remove="Seed\XmlSeeder.cs" />
   </ItemGroup>

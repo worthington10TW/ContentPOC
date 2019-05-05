@@ -1,5 +1,6 @@
 ﻿using ContentPOC.Model;
 using ContentPOC.Unit.Model;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace ContentPOC.DAL
 
         public void Reset() => _store.Clear();
 
-        public IUnit Get(string[] domain, Id id)
+        public IUnit Get(string[] domain, Guid id)
         {
             _store.TryGetValue(GenerateId(domain, id), out var value);
             return value;
@@ -27,7 +28,7 @@ namespace ContentPOC.DAL
             return Task.FromResult(Save(unit));
         }
 
-        private static string GenerateId(string[] domain, Id id) => $"{string.Join(".", domain)}.{id.Value}";
+        private static string GenerateId(string[] domain, Guid id) => $"{string.Join(".", domain)}.{id}";
 
         private IUnit Save(IUnit unit) =>
             _store.AddOrUpdate(

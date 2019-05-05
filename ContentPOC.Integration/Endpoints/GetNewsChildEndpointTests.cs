@@ -1,5 +1,8 @@
 ﻿using ContentPOC.DAL;
+using ContentPOC.Extensions;
 using ContentPOC.Model;
+using ContentPOC.NewsIngestor;
+using ContentPOC.Unit.Model;
 using ContentPOC.Unit.Model.News;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +22,7 @@ namespace ContentPOC.Integration.Endpoints
         {
             private readonly HttpResponseMessage _response;
             private readonly IRepository _repository;
-            private readonly IUnit[] units = new[] {
+            private readonly IUnit[] units = {
                 new Headline("This is a headline"),
                 new Headline("This is another headline"),
             };
@@ -27,8 +30,12 @@ namespace ContentPOC.Integration.Endpoints
             public HeadlineTests()
             {
                 _repository = Services.GetService<IRepository>();
+
+                units[0].Meta.SetId(units[0].ToGuid());
+                units[1].Meta.SetId(units[1].ToGuid());
+
                 SaveSampleData().GetAwaiter().GetResult();
-                _response = HttpClient.GetAsync($"/news/headlines/" + units[0].Meta.Id.Value)
+                _response = HttpClient.GetAsync($"/news/headlines/" + units[0].Meta.Id)
                     .GetAwaiter()
                     .GetResult();
             }

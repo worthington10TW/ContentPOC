@@ -73,7 +73,7 @@ namespace ContentPOC
                     c.RoutePrefix = string.Empty;
                 })
                 .UseMvc();
-            
+
             app.ApplicationServices.GetService<XmlSeeder>()
                 .SeedAsync(Path.Combine("Seed", "Data"))
                 .GetAwaiter().GetResult();
