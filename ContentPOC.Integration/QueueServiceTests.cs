@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
+using System.Threading;
 using Xunit;
 
 namespace ContentPOC.Integration
@@ -29,6 +30,7 @@ namespace ContentPOC.Integration
             var queue = _testServer.Host.Services.GetService<INotificationQueue>();
             var @event = new RawNewsContentIngested { Location = "BEST LOCATION EVER" };
             queue.Queue(@event);
+            Thread.Sleep(new TimeSpan(0, 0, 1));
 
             _mockHub.Verify(x => x.Alert(@event));
         }
