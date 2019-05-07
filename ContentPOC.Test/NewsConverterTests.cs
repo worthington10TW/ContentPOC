@@ -39,19 +39,28 @@ namespace ContentPOC.Test
         [Fact]
         public void ShouldHaveCorrectMeta()
         {
-            _item.Meta.Id.Should().Be(new Guid("5b7d5c7c-f57f-5b59-834d-2e3394f5f8ae"));
-            _item.Meta.Href.Should().Be("news/5b7d5c7c-f57f-5b59-834d-2e3394f5f8ae");
-            }
+            _item.Meta.Id.Should().Be(new Guid("13f2a7e3-1272-d633-3e23-11c35d634bac"));
+            _item.Meta.Href.Should().Be("news/13f2a7e3-1272-d633-3e23-11c35d634bac");
+        }
 
-    [Fact]
-        public void ChildShouldHaveCorrectIdSet()
+        [Fact]
+        public void FirstChildShouldHaveCorrectIdSet()
         {
-            _item.Children[0].Meta.Id.Should().Be(new Guid("991be316-9f9d-9fd1-dbd2-9797088cb239"));
-            _item.Children[0].Meta.Href.Should().Be("news/headlines/991be316-9f9d-9fd1-dbd2-9797088cb239");
-            _item.Children[1].Meta.Id.Should().Be(new Guid("aa51c127-88a4-9c04-7c87-4366c09e64dd"));
-            _item.Children[1].Meta.Href.Should().Be("news/story-summaries/aa51c127-88a4-9c04-7c87-4366c09e64dd");
-            _item.Children[2].Meta.Id.Should().Be(new Guid("cb23f5ee-6d53-047e-4f75-b3cb517b43b3"));
-            _item.Children[2].Meta.Href.Should().Be("news/story-text/cb23f5ee-6d53-047e-4f75-b3cb517b43b3");
+            _item.Children[0].Meta.Id.Should().Be(new Guid("7a7ea619-f75f-27ca-ac5a-35165adc2516"));
+            _item.Children[0].Meta.Href.Should().Be("news/headlines/7a7ea619-f75f-27ca-ac5a-35165adc2516");
+        }
+
+        [Fact]
+        public void SecondChildShouldHaveCorrectIdSet()
+        {
+            _item.Children[1].Meta.Id.Should().Be(new Guid("900c8b4d-6d0f-2b9e-2c2f-fe6c662863b8"));
+            _item.Children[1].Meta.Href.Should().Be("news/story-summaries/900c8b4d-6d0f-2b9e-2c2f-fe6c662863b8");
+        }
+        [Fact]
+        public void ThirdChildShouldHaveCorrectIdSet()
+        {
+            _item.Children[2].Meta.Id.Should().Be(new Guid("52f3e494-e16c-5207-e7eb-0891ba36472e"));
+            _item.Children[2].Meta.Href.Should().Be("news/story-text/52f3e494-e16c-5207-e7eb-0891ba36472e");
         }
     }
 }

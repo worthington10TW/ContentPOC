@@ -6,7 +6,6 @@ using ContentPOC.Model.News;
 using ContentPOC.Unit.Model.News;
 using System;
 using System.Collections.Generic;
-
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -15,6 +14,8 @@ namespace ContentPOC.NewsIngestor
     public interface IManager<TUnit> where TUnit : IUnit
     {
         Task<IUnit> SaveAsync(XmlDocument request);
+
+        Task<IUnit> SaveAsync(IUnit unit);
 
         IUnit Get(string[] domain, Guid id);
 
@@ -37,12 +38,13 @@ namespace ContentPOC.NewsIngestor
             _queue = queue;
         }
 
-        public async Task<IUnit> SaveAsync(XmlDocument request)
-        {
-            var result = _converter.Create(request);
+        public async Task<IUnit> SaveAsync(XmlDocument request) =>
+            await SaveAsync(_converter.Create(request));
 
+        public async Task<IUnit> SaveAsync(IUnit unit)
+        {
             return await _repository
-                .SaveAsync(result)
+                .SaveAsync(unit)
                 .ContinueWith(r =>
                 {
                     // TODO: Change this to drive out the domain.

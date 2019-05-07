@@ -25,6 +25,7 @@ namespace ContentPOC.Converter
             return news;
         }
 
+        //TODO The stream should be mapped while reading to maintain order type
         public IUnit[] GetChildren(XmlNamespaceManager manager, XmlDocument xdoc)
         {
             var list = new List<IUnit>();

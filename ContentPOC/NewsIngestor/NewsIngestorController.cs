@@ -1,10 +1,13 @@
-﻿using ContentPOC.NewsIngestor;
-using ContentPOC.Unit.Model;
+﻿using ContentPOC.Model;
+using ContentPOC.NewsIngestor;
 using ContentPOC.Unit.Model.News;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using static ContentPOC.Extensions.IUnitExtensions;
 
 namespace ContentPOC
 {
@@ -68,6 +71,28 @@ namespace ContentPOC
         [HttpGet("{area}/{id}")]
         public IActionResult Get(string area, Guid id) => Get(id, NEWS_AREA, area);
 
+        /// <summary>
+        /// Put the specified id and data.
+        /// </summary>
+        /// <returns>The put.</returns>
+        /// <param name="id">Identifier.</param>
+        /// <param name="data">Data.</param>
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(
+            Guid id, 
+            [FromBody]Dictionary<string, object> data) => 
+            await PutUnitAsync(data, id, NEWS_AREA);
+
+        private async Task<IActionResult> PutUnitAsync(
+            Dictionary<string, object> data,
+            Guid id, 
+            params string[] areas)
+            {
+            if (data == null || !data.Any()) return BadRequest();
+
+            return Ok(await _manager.SaveAsync(areas.ToUnit(id, data)));
+            }
+
         private IActionResult Get(Guid id, params string[] areas)
         {
             var result = _manager.Get(areas, id);
@@ -76,18 +101,6 @@ namespace ContentPOC
 
             dynamic value = result;
             return Ok(value);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult Put(Guid id) => Put(id, NEWS_AREA);
-
-        private IActionResult Put(Guid id, params string[] areas)
-        {
-            var result = _manager.Get(areas, id);
-            if (result == null)
-                return NotFound();
-
-            return Ok();
         }
     }
 }

@@ -19,6 +19,8 @@ namespace ContentPOC.Unit.Model
 
         public List<IUnit> Children { get; } = new List<IUnit>();
 
+        public List<Guid> ChildIds { get; } = new List<Guid>();
+
         public List<IMark> Marks { get; } = new List<IMark>();
 
         public bool ShouldSerializeChildren() => Children.Any();
