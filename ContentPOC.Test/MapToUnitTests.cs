@@ -4,6 +4,7 @@ using System.Linq;
 using ContentPOC.Extensions;
 using ContentPOC.Unit.Model.News;
 using FluentAssertions;
+using Newtonsoft.Json.Linq;
 using Xunit;
 using static ContentPOC.Extensions.IUnitExtensions;
 
@@ -83,13 +84,14 @@ namespace ContentPOC.Test
         [Fact]
         public void WhenTypeIsNews_ShouldMapToNews()
         {
-            var childIds = Enumerable.Range(0, 10).Select(x => Guid.NewGuid()).ToArray();
-            var data = new Dictionary<string, object> { { "Children", childIds } };
+            var ids = Enumerable.Range(0, 10).Select(x => Guid.NewGuid()).ToArray();
+            var data = new Dictionary<string, object>
+            { { "Children", new JArray(content: ids.Select(x => x.ToString())) } };
 
             var unit = new NewsItem().Domain.ToUnit(_id, data);
 
             var news = unit.Should().BeOfType<NewsItem>().Subject;
-            news.ChildIds.Should().BeEquivalentTo(childIds);
+            news.ChildIds.Should().BeEquivalentTo(ids);
             news.Meta.Id.Should().Be(_id);
         }
     }
