@@ -2,8 +2,8 @@
 using ContentPOC.Unit.Model.News;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,19 +23,23 @@ namespace ContentPOC.Integration.Endpoints
         }
 
         [Fact]
-        public async Task WhenIdDoesNotExist_ShouldReturnErrorResponse()
+        public async Task ShouldReturnUpdatedStatusCode()
         {
-            var response = await HttpClient.PutAsync("/news/" + Guid.NewGuid(), new StringContent("stuff"));
+            var data = new Dictionary<string, object> 
+            { { "Children", new[] { Guid.NewGuid(), Guid.NewGuid() } } };
+            var response = await HttpClient.PutAsJsonAsync(
+                news.Meta.Href, data);
 
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Fact]
-        public async Task WhenIdDoesExist_ShouldReturnUpdatedStatusCode()
+        public async Task WhenBodyIsEmpty_ShouldReturnBadStatusCode()
         {
-            var response = await HttpClient.PutAsync(news.Meta.Href, new StringContent("stuff"));
+            var response = await HttpClient.PutAsJsonAsync<Dictionary<string, object>>
+                (news.Meta.Href, null);
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
     }
 }
