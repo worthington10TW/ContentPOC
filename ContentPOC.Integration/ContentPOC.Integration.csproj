@@ -5,6 +5,9 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <NoWarn>1701;1702;CS1591</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <None Remove="Endpoints\3227114_Examining the impact of Brexit and UK-wide common frameworks on devolution_preview.xml" />
     <None Remove="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce %28AJ v DM%29_preview.xml" />
@@ -14,10 +17,15 @@
     <None Remove="out\zh-Hant\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll" />
     <None Remove="out\zh-Hant\Microsoft.VisualStudio.TraceDataCollector.resources.dll" />
     <None Remove="out\zh-Hant\System.Spatial.resources.dll" />
+    <None Remove="appsettings.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Endpoints\3228876_Establishing habitual residence to secure jurisdiction for divorce (AJ v DM)_preview.xml" />
+    <Content Include="appsettings.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

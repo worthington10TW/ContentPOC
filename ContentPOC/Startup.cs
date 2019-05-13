@@ -7,6 +7,7 @@ using ContentPOC.Unit.Model.News;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.Swagger;
@@ -63,7 +64,7 @@ namespace ContentPOC
 
         }
 
-        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env, IConfiguration configuration)
         {
             (env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseStatusCodePages())
                 .UseStaticFiles()
@@ -80,7 +81,8 @@ namespace ContentPOC
                 .AllowCredentials())
                 .UseMvc();
 
-            app.ApplicationServices.GetService<XmlSeeder>()
+            if (configuration.GetValue<bool>("SeedDatabase"))
+                app.ApplicationServices.GetService<XmlSeeder>()
                 .SeedAsync(Path.Combine("Seed", "Data"))
                 .GetAwaiter().GetResult();
         }

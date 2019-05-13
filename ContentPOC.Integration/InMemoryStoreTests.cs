@@ -128,7 +128,6 @@ namespace ContentPOC.Integration
             _testServer.Dispose();
         }
 
-        // TODO: tightly coupling ID to hash causes an excessively rigid codebase.  Decouple
         public class TestUnit : IUnit
         {
             public string[] Domain { get; set; } = new[] { nameof(TestUnit) };
