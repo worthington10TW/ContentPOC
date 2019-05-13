@@ -53,12 +53,12 @@ namespace ContentPOC.DAL
         public DTO(IUnit unit)
         {
             Unit = unit;
-            ChildrenIds = unit?.Children?.Select(x => new Child(x.Domain, x.Meta.Id))
-                .ToArray();
+            //ChildrenIds = unit?.Children?.Select(x => new Child(x.Domain, x.Meta.Id))
+                //.ToArray();
         }
 
         public IUnit Unit { get; private set; }
-        public Child[] ChildrenIds { get; private set; }
+        public Child[] ChildrenIds { get; private set; } = new List<Child>().ToArray();
 
         public class Child
         {
