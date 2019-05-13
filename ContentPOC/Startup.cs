@@ -74,10 +74,10 @@ namespace ContentPOC
                     c.RoutePrefix = string.Empty;
                 })
                 .UseCors(builder => builder
-    .AllowAnyOrigin()
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .AllowCredentials())
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials())
                 .UseMvc();
 
             app.ApplicationServices.GetService<XmlSeeder>()
