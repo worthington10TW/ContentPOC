@@ -28,8 +28,11 @@ namespace ContentPOC.Unit.Model
 
     public class Meta : IMeta
     {
-        public Meta(IUnit unit) =>
+        public Meta(IUnit unit)
+        {
             Area = new Area(unit?.Domain);
+            Type = unit.Domain;
+        }
 
         [JsonIgnore]
         public Guid Id { get; private set; } = Guid.NewGuid();
@@ -40,6 +43,8 @@ namespace ContentPOC.Unit.Model
         public virtual Area Area { get; }
 
         public string Href => $"{string.Join("/", Area?.Value)}/{Id}";
+
+        public string[] Type { get; }
     }
 
     public interface IMeta
