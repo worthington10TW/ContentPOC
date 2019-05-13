@@ -27,6 +27,7 @@ namespace ContentPOC
                 .AddXmlSerializerFormatters();
 
             services.AddMvcCore();
+            services.AddCors();
 
             services
                 .AddSingleton<DynamicNamespaceManager>()
@@ -72,6 +73,11 @@ namespace ContentPOC
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                     c.RoutePrefix = string.Empty;
                 })
+                .UseCors(builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials())
                 .UseMvc();
 
             app.ApplicationServices.GetService<XmlSeeder>()
