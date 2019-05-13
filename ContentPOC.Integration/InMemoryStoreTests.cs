@@ -152,6 +152,8 @@ namespace ContentPOC.Integration
 
             public string Href => string.Empty;
 
+            public string[] Type => new[] { nameof(TestUnit) };
+
             public void SetId(Guid id) => Id = id;
         }
     }

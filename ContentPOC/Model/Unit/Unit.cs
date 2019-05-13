@@ -53,6 +53,7 @@ namespace ContentPOC.Unit.Model
         Area Area { get; }
         string Href { get; }
         void SetId(Guid id);
+        string[] Type { get; }
     }
 
     public class Area
