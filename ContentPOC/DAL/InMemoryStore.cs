@@ -17,6 +17,7 @@ namespace ContentPOC.DAL
         public IUnit Get(string[] domain, Guid id)
         {
             _store.TryGetValue(GenerateId(domain, id), out var value);
+            value?.Unit.Children.Clear();
             value?.Unit?.Children?.AddRange(GetChildren(value?.ChildrenIds));
             return value?.Unit;
         }
@@ -24,6 +25,7 @@ namespace ContentPOC.DAL
         public Task<IUnit> SaveAsync(IUnit unit)
         {
             unit.Children.AsParallel().ForAll(u => Save(u));
+
             return Task.FromResult(Save(unit));
         }
 
@@ -53,8 +55,11 @@ namespace ContentPOC.DAL
         public DTO(IUnit unit)
         {
             Unit = unit;
-            //ChildrenIds = unit?.Children?.Select(x => new Child(x.Domain, x.Meta.Id))
-                //.ToArray();
+            ChildrenIds = unit?.Children?
+                .Select(x => new Child(x.Domain, x.Meta.Id))
+                .ToArray();
+
+            unit.Children.Clear();
         }
 
         public IUnit Unit { get; private set; }
