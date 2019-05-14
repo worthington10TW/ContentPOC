@@ -5,9 +5,7 @@ using ContentPOC.NewsIngestor;
 using ContentPOC.Seed;
 using ContentPOC.Unit.Model.News;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,29 +20,12 @@ namespace ContentPOC
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
-            {
-                builder
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowAnyOrigin()
-                    .AllowCredentials();
-            }));
-
             services
                 .AddLogging()
                 .AddMvc()
                 .AddXmlDataContractSerializerFormatters()
                 .AddXmlSerializerFormatters();
 
-            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
-            {
-                builder
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowAnyOrigin()
-                    .AllowCredentials();
-            }));
             services.AddMvcCore();
 
             services.AddSignalR(options => options.EnableDetailedErrors = true);
@@ -85,6 +66,11 @@ namespace ContentPOC
 
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env, IConfiguration configuration)
         {
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin()
+                .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+            });
             (env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseStatusCodePages())
                 .UseStaticFiles()
                 .UseSwagger()
@@ -93,7 +79,7 @@ namespace ContentPOC
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                     c.RoutePrefix = string.Empty;
                 })
-                .UseCors("CorsPolicy")
+              
                 .UseSignalR(route =>
                 {
                     route.MapHub<NotificationHub>("/notification-hub");
