@@ -6,9 +6,13 @@ namespace ContentPOC.Integration.Endpoints
 {
     public class Dto
     {
+        public class AllNewsDto 
+        {
+            public Meta meta { get; set; }
+            public string value {get;set;}
+        }
         public class NewsDto
         {
-            public string _namespace { get; set; }
             public Meta meta { get; set; }
             public Child[] children { get; set; }
         }

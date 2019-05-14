@@ -52,7 +52,9 @@ namespace ContentPOC
         /// </summary>
         /// <returns>The all.</returns>
         [HttpGet]
-        public IActionResult GetAll() => Ok(_manager.GetAll(NEWS_AREA));
+        public IActionResult GetAll() => Ok(
+            _manager.GetAll(NEWS_AREA).Select(x => new {value = GetHeading(x), meta = x.Meta}));
+            
 
         /// <summary>
         /// Get the specified id.
@@ -101,6 +103,12 @@ namespace ContentPOC
 
             dynamic value = result;
             return Ok(value);
+        }
+
+        private static string GetHeading(IUnit unit)
+        {
+            var firstHeading = (Headline)unit.Children?.FirstOrDefault(x => x is Headline);
+            return firstHeading?.Value ?? "No heading";
         }
     }
 }

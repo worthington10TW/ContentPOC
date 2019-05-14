@@ -26,11 +26,11 @@ namespace ContentPOC.HostedService
 
                 try
                 {
-                    _hub.Alert(@event);
+                    await _hub.Alert(@event);
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine(ex.ToString() +
+                    Console.Error.WriteLine(ex +
                        $"Error occurred executing {nameof(@event)}.");
                 }
             }

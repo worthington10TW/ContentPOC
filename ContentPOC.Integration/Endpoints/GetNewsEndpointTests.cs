@@ -41,17 +41,6 @@ namespace ContentPOC.Integration.Endpoints
         public void ShouldReturn200Response_WhenExist() =>
             _response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        [Fact]
-        public async Task ShouldGetInsertedHeadline()
-        {
-            var values = await _response.Content.ReadAsAsync<NewsDto[]>();
-            values = values.OrderBy(x => x.meta.href).ToArray();
-            for (var i = 0; i < values.Length; i++)
-                values[i].children[0].value
-                    .Should()
-                    .Be((_units[i].Children[0] as Headline).Value);
-        }
-
         private static async Task SaveSampleData(IUnit[] units, IRepository repository) =>
             await Task.WhenAll(units.Select(repository.SaveAsync));
     }

@@ -5,6 +5,7 @@ using ContentPOC.NewsIngestor;
 using ContentPOC.Seed;
 using ContentPOC.Unit.Model.News;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -21,14 +22,32 @@ namespace ContentPOC
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin()
+                    .AllowCredentials();
+            }));
+
             services
                 .AddLogging()
                 .AddMvc()
                 .AddXmlDataContractSerializerFormatters()
                 .AddXmlSerializerFormatters();
 
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin()
+                    .AllowCredentials();
+            }));
             services.AddMvcCore();
-            services.AddCors();
+
+            services.AddSignalR(options => options.EnableDetailedErrors = true);
 
             services
                 .AddSingleton<DynamicNamespaceManager>()
@@ -74,11 +93,11 @@ namespace ContentPOC
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                     c.RoutePrefix = string.Empty;
                 })
-                .UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials())
+                .UseCors("CorsPolicy")
+                .UseSignalR(route =>
+                {
+                    route.MapHub<NotificationHub>("/notification-hub");
+                })
                 .UseMvc();
 
             if (configuration.GetValue<bool>("SeedDatabase"))
