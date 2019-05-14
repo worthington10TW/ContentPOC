@@ -39,7 +39,8 @@ namespace ContentPOC.Integration.Endpoints
         [Fact]
         public async Task ShouldReturnNewsResponse_WhenPostingXml() =>
             await _xmlPostResponse.Content.ReadAsAsync<AllNewsDto>()
-            .ContinueWith(content => AssertResponse(content.Result));
+            .ContinueWith(content =>
+            content.Result.meta.href.Should().Be("news/" + _newsId));
 
         [Fact]
         public void ShouldReturnUri_WhenPostingXml() =>
@@ -67,12 +68,6 @@ namespace ContentPOC.Integration.Endpoints
             var queue = Services.GetService<INotificationQueue>();
             var rawNewsContentIngestedEvent = await queue.DequeueAsync(CancellationToken.None);
             rawNewsContentIngestedEvent.Location.Should().Be($"news/{_newsId}");
-        }
-        
-        private void AssertResponse(AllNewsDto content)
-        {
-            content.meta.href.Should().Be("news/" + _newsId);
-            content.value.Should().Be("Examining the impact of Brexit and UK-wide common frameworks on devolution ");
         }
 
         private void AssertResponse(NewsDto content)
