@@ -80,7 +80,10 @@ namespace ContentPOC
         {
             app.UseCors(builder =>
             {
-                builder.WithOrigins("http://localhost:8080", "http://localhost:8081", "http://worthington10tw-hello-vue.herokuapp.com")
+                builder.WithOrigins(
+                    "http://localhost:8080", 
+                    "http://localhost:8081", 
+                    "https://worthington10tw-hello-vue.herokuapp.com")
                 .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
             });
             (env.IsDevelopment() ? app.UseDeveloperExceptionPage() : app.UseStatusCodePages())
