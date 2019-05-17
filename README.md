@@ -17,7 +17,7 @@ Instructions to create, host, release
 
 1. Install the Heroku CLI <https://devcenter.heroku.com/articles/heroku-cli#download-and-install> .
 2. Login  `heroku login`
-3. Container `login heroku container:login`
+3. Container login `heroku container:login`
 4. Create an app  `heroku apps:create {appName} --region eu`
 5. Push an app (from Dockerfile)  `heroku container:push web -a {appName}`
 6. Release an app  `heroku container:release web -a {appName}`
