@@ -1,7 +1,6 @@
 # About
 
 POC for content... 
-Andrew can you update? (pretty please)
 
 # Publishing
 
