@@ -6,3 +6,4 @@
 **/*.lock
 **/out/
 **/publish/
+.DS_Store
